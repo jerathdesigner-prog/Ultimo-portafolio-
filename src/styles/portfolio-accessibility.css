@@ -1,0 +1,478 @@
+/* Preserve Jerath's palette and character; strengthen the reading layer. */
+:root {
+  --reading-font: 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
+  --reading-ink: #23312d;
+  --reading-muted: #415449;
+  --reading-paper: #e7eacb;
+}
+
+body {
+  overflow-wrap: break-word;
+}
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+button,
+a {
+  touch-action: manipulation;
+}
+button,
+input,
+textarea {
+  -webkit-tap-highlight-color: #b0b45466;
+}
+:is(button, a, input, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--reading-ink) !important;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px var(--reading-paper) !important;
+}
+.menu-button,
+.round-button,
+.service-list button,
+.dialog-close,
+.close-dialog,
+.contact-cta,
+.social-links a,
+.back-top {
+  min-height: 44px;
+  min-width: 44px;
+}
+.footer-socials a {
+  min-height: 44px;
+  min-width: 44px;
+}
+.intro-copy .hero-description {
+  text-shadow:
+    0 1px 3px #23312d,
+    0 0 12px #23312d;
+}
+.reading-layout .intro-copy .hero-description {
+  text-shadow: none;
+}
+.site-header {
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
+}
+.site-header:focus-within {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+}
+.wordmark {
+  color: var(--reading-ink);
+  font-size: 13px;
+}
+.wordmark small {
+  font-size: 10px;
+  opacity: 1;
+  letter-spacing: 0.02em;
+}
+.site-header.on-dark .wordmark,
+.site-header.contact-visible .wordmark {
+  color: var(--reading-paper);
+}
+.navigation {
+  max-height: calc(100dvh - 96px - env(safe-area-inset-bottom));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.navigation a {
+  min-height: 48px;
+}
+.hero-description {
+  font-size: clamp(14px, 1.1vw, 17px);
+  line-height: 1.6;
+}
+.hero-role {
+  line-height: 1.4;
+}
+.scroll-cue {
+  min-width: 44px;
+  min-height: 44px;
+}
+.service-panel > header p,
+.service-list button {
+  font-size: 16px !important;
+  line-height: 1.5;
+}
+.sample-caption {
+  font-size: 13px;
+  color: var(--reading-paper);
+  letter-spacing: 0.04em;
+}
+.panel-number {
+  color: var(--reading-paper);
+}
+.jm-mini-section a {
+  min-height: 44px;
+  padding-block: 10px;
+}
+dialog {
+  max-width: calc(100vw - 24px);
+  max-height: calc(100dvh - 24px);
+  overscroll-behavior: contain;
+}
+input,
+textarea,
+select {
+  font-size: 16px;
+}
+.character-float,
+.scroll-arrow {
+  animation: none !important;
+}
+
+@media (max-width: 650px) {
+  .wordmark {
+    max-width: calc(100vw - 140px);
+  }
+  .wordmark small {
+    line-height: 1.4;
+  }
+  .intro-copy {
+    width: calc(100% - 32px);
+  }
+  .intro-copy .hero-description {
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+  }
+  .story-copy.jm-story p:not(.eyebrow),
+  .story-copy.jm-story .jm-mini-section p {
+    font-size: 15px !important;
+    line-height: 1.6 !important;
+  }
+  .jm-list li {
+    font-size: 16px;
+    line-height: 1.45;
+  }
+  .jm-software span {
+    font-size: 14px;
+    white-space: normal;
+    min-width: 0;
+  }
+  .story-copy.jm-story .jm-kicker {
+    font-size: 12px !important;
+  }
+  .story-copy.jm-story {
+    max-height: 60svh !important;
+  }
+}
+
+/* The same content, in normal document order, for short landscape viewports
+   and reduced motion. No duplicate copy or extra character downloads. */
+body.reading-layout {
+  scroll-behavior: auto;
+}
+.reading-layout .narrative {
+  height: auto !important;
+}
+.reading-layout .scene {
+  position: relative;
+  height: auto;
+  overflow: clip;
+  display: flex;
+  flex-direction: column;
+  padding-top: 90px;
+}
+.reading-layout .character-wrap {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  height: 560px !important;
+  width: 374px;
+  max-width: 100%;
+  margin: 0 auto -55px;
+  transform: none !important;
+  flex-shrink: 0;
+}
+.reading-layout .intro-copy {
+  position: relative;
+  left: auto;
+  bottom: auto !important;
+  transform: none !important;
+  opacity: 1 !important;
+  width: min(700px, calc(100% - 40px));
+  margin: 0 auto 70px;
+  color: var(--reading-ink);
+  text-shadow: none;
+}
+.reading-layout .intro-copy h1,
+.reading-layout .intro-copy .hero-role,
+.reading-layout .intro-copy .hero-description {
+  color: var(--reading-ink) !important;
+}
+.reading-layout .story-copy.jm-story {
+  position: relative !important;
+  inset: auto !important;
+  width: min(740px, calc(100% - 40px)) !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 auto 44px;
+  padding: 28px !important;
+  opacity: 1 !important;
+  transform: none !important;
+  overflow: visible !important;
+  pointer-events: auto !important;
+}
+.reading-layout .story-copy.jm-story p {
+  max-width: 60ch;
+}
+.reading-layout .scene-footer,
+.reading-layout .about-anchor {
+  display: none;
+}
+.reading-layout .works-section,
+.reading-layout .works-stage,
+.reading-layout .works-window,
+.reading-layout .works-track {
+  position: relative !important;
+  inset: auto !important;
+  width: 100% !important;
+  height: auto !important;
+  transform: none !important;
+  overflow: visible !important;
+}
+.reading-layout .works-track {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.reading-layout .works-stage {
+  background: var(--reading-ink) !important;
+}
+@media (max-width: 760px) {
+  .reading-layout .works-track {
+    grid-template-columns: 1fr;
+  }
+}
+.reading-layout .works-launch-copy {
+  position: relative !important;
+  inset: auto !important;
+  opacity: 1 !important;
+  transform: none !important;
+  padding: 36px 24px 12px;
+}
+.reading-layout .works-launch-copy h2 {
+  font-size: clamp(40px, 7vw, 64px) !important;
+}
+.reading-layout .service-panel {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0;
+  padding: 28px 24px !important;
+  border: 1px solid #e7eacb33;
+}
+.reading-layout .service-panel > header {
+  min-height: 0;
+}
+.reading-layout .sample-button {
+  width: 100%;
+  min-width: 0;
+  margin: 24px 0;
+}
+.reading-layout .service-list {
+  position: relative;
+  inset: auto !important;
+  max-height: none !important;
+  overflow: visible;
+}
+.reading-layout .awards-section {
+  position: relative !important;
+  top: auto !important;
+}
+.reading-layout .contact-reveal-shell {
+  height: auto !important;
+  margin-top: 0 !important;
+}
+.reading-layout .contact-section {
+  position: relative !important;
+  height: auto !important;
+  min-height: 100svh;
+  transform: none !important;
+  pointer-events: auto !important;
+}
+.reading-layout .awards-intro,
+.reading-layout .awards-carousel {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+/* Small editorial refinements: branded display type + quieter reading type.
+   System fonts add no font requests or layout-dependent animation. */
+:is(
+  .hero-description,
+  .story-copy.jm-story p:not(.eyebrow),
+  .jm-list li,
+  .jm-software span,
+  .jm-mini-section,
+  .service-panel > header p,
+  .service-list button,
+  .awards-description,
+  .award-meta p,
+  .award-meta-top,
+  .award-dialog-copy p,
+  .project-description p,
+  .contact-copy > p:not(.eyebrow)
+) {
+  font-family: var(--reading-font) !important;
+  letter-spacing: 0 !important;
+}
+.hero-description {
+  max-width: 48ch;
+  text-wrap: pretty;
+}
+.intro-copy .hero-description {
+  text-shadow: 0 1px 3px #23312de6;
+}
+.story-copy.jm-story h2 {
+  letter-spacing: -0.035em !important;
+  line-height: 1.04 !important;
+}
+.story-copy.jm-story p:not(.eyebrow) {
+  line-height: 1.65 !important;
+  max-width: 40ch;
+  text-wrap: pretty;
+}
+.service-panel > header p {
+  color: #cbd3b9 !important;
+  max-width: 36ch;
+}
+.service-list button {
+  font-weight: 500;
+}
+.awards-description {
+  color: var(--reading-muted) !important;
+  max-width: 58ch !important;
+}
+.awards-kicker,
+.award-meta-top,
+.award-meta .award-tag {
+  color: var(--reading-muted) !important;
+}
+.award-meta-top {
+  font-size: 12px !important;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.award-meta p {
+  line-height: 1.6 !important;
+}
+.navigation a {
+  font-family: var(--cool) !important;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.project-description p,
+.award-dialog-copy p {
+  font-size: 16px !important;
+  line-height: 1.7 !important;
+  max-width: 65ch;
+}
+.contact-copy h2 {
+  letter-spacing: -0.035em !important;
+  line-height: 1.04 !important;
+}
+.contact-copy .contact-cta {
+  font-family: var(--reading-font) !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  line-height: 1.35 !important;
+  min-height: 52px;
+}
+.footer-top,
+.footer-copyright {
+  font-family: var(--reading-font);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+}
+.footer-top {
+  align-items: center;
+  display: inline-flex;
+  min-height: 44px;
+}
+.recognition-navigation {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin: 0 clamp(24px, 5vw, 84px) 20px;
+}
+.recognition-navigation p {
+  color: var(--reading-muted);
+  font: 400 14px/1.5 var(--reading-font);
+  margin: 0;
+}
+.awards-buttons {
+  display: flex;
+  flex: none;
+  gap: 8px;
+}
+.awards-buttons button {
+  align-items: center;
+  background: transparent;
+  border: 1px solid #23312d66;
+  border-radius: 50%;
+  color: var(--reading-ink);
+  display: inline-flex;
+  height: 44px;
+  justify-content: center;
+  padding: 10px;
+  transition: background-color 0.16s ease;
+  width: 44px;
+}
+.awards-buttons button:hover:not(:disabled) {
+  background: var(--oasis);
+}
+.awards-buttons button:disabled {
+  cursor: default;
+  opacity: 0.35;
+}
+.awards-buttons svg {
+  height: 22px;
+  width: 22px;
+}
+@media (max-width: 650px) {
+  .recognition-navigation {
+    margin-inline: 20px;
+  }
+  .story-copy.jm-story p:not(.eyebrow) {
+    line-height: 1.6 !important;
+  }
+  .awards-description {
+    font-size: 16px !important;
+  }
+  .contact-copy > p:not(.eyebrow) {
+    font-size: 16px !important;
+    line-height: 1.65 !important;
+  }
+}
+
+/* Only the character eases wheel/touch steps; scroll and scene timing stay native.
+   The compositor interpolates transform, with no filter or extra JS frame loop. */
+.character-wrap {
+  transition: transform 0.32s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.reading-layout .character-wrap,
+.reduce-motion .character-wrap {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+  app-hero-eyes {
+    visibility: hidden;
+  }
+}

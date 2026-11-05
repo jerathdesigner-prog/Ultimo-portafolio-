@@ -57,16 +57,14 @@ export class HeroEyesComponent {
     const zone = inject(NgZone);
     const destroyRef = inject(DestroyRef);
     afterNextRender(() => {
-      const canFollow = matchMedia(
+      const policy = matchMedia(
         '(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)',
-      ).matches;
-      if (canFollow) {
-        zone.runOutsideAngular(() => this.follow(destroyRef));
-      }
+      );
+      zone.runOutsideAngular(() => this.follow(destroyRef, policy));
     });
   }
 
-  private follow(destroyRef: DestroyRef): void {
+  private follow(destroyRef: DestroyRef, policy: MediaQueryList): void {
     const current: Point[] = HERO_EYES.map((eye) => ({ ...eye.rest }));
     let pointer: Point | null = null;
     let frame = 0;
@@ -100,9 +98,11 @@ export class HeroEyesComponent {
       }
     };
     const schedule = () => {
+      if (!policy.matches || document.hidden) return;
       frame ||= requestAnimationFrame(render);
     };
     const onMove = (event: PointerEvent) => {
+      if (!policy.matches || event.pointerType === 'touch') return;
       pointer = { x: event.clientX, y: event.clientY };
       schedule();
     };
@@ -113,11 +113,29 @@ export class HeroEyesComponent {
       }
     };
 
+    const reset = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      pointer = null;
+      HERO_EYES.forEach((eye, index) => {
+        current[index] = { ...eye.rest };
+        const style = this.pupils()[index]?.nativeElement.style;
+        const box = pupilBox(eye, eye.rest);
+        if (style) {
+          style.left = `${box.left}%`;
+          style.top = `${box.top}%`;
+        }
+      });
+    };
+    policy.addEventListener('change', reset);
+    document.addEventListener('visibilitychange', reset);
     addEventListener('pointermove', onMove, { passive: true });
     addEventListener('scroll', schedule, { passive: true });
     document.documentElement.addEventListener('pointerout', onLeave);
     destroyRef.onDestroy(() => {
       cancelAnimationFrame(frame);
+      policy.removeEventListener('change', reset);
+      document.removeEventListener('visibilitychange', reset);
       removeEventListener('pointermove', onMove);
       removeEventListener('scroll', schedule);
       document.documentElement.removeEventListener('pointerout', onLeave);

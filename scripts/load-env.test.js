@@ -27,6 +27,7 @@ function sandbox(envContent) {
   fs.symlinkSync(
     path.join(root, 'node_modules'),
     path.join(dir, 'node_modules'),
+    process.platform === 'win32' ? 'junction' : 'dir',
   );
   if (envContent !== undefined)
     fs.writeFileSync(path.join(dir, '.env'), envContent);

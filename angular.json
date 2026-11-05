@@ -67,7 +67,11 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.scss", "src/styles/portfolio.css"],
+            "styles": [
+              "src/styles.scss",
+              "src/styles/portfolio.css",
+              "src/styles/portfolio-accessibility.css"
+            ],
             "scripts": []
           },
           "configurations": {
@@ -111,7 +115,11 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.scss", "src/styles/portfolio.css"],
+            "styles": [
+              "src/styles.scss",
+              "src/styles/portfolio.css",
+              "src/styles/portfolio-accessibility.css"
+            ],
             "scripts": []
           },
           "configurations": {
@@ -168,7 +176,11 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "allowedCommonJsDependencies": ["encrypt-storage", "pubsub-js"],
-            "styles": ["src/styles.scss", "src/styles/portfolio.css"]
+            "styles": [
+              "src/styles.scss",
+              "src/styles/portfolio.css",
+              "src/styles/portfolio-accessibility.css"
+            ]
           },
           "configurations": {
             "development": {

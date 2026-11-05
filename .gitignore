@@ -69,3 +69,12 @@ bun.lockb
 
 # Standalone site build served by the Cloudflare Worker (no federation)
 /dist-site
+
+# Local browser review artifacts
+/output/playwright/
+/playwright-report/
+
+# Local character experiments and review reports (not used by the website)
+/artifacts/
+/tools/blender_mcp_task.py
+/tools/*portfolio_character.py

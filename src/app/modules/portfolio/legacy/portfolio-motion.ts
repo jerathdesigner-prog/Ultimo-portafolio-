@@ -21,6 +21,10 @@ export function startPortfolioMotion(portfolio: PublicPortfolio): void {
   const desktopLen=1125+Math.max(0,panels.length-4)*78;const mobileLen=1200+Math.max(0,panels.length-4)*94;
   hero.style.setProperty('--hero-height-desktop',desktopLen+'svh');hero.style.setProperty('--hero-height-mobile',mobileLen+'svh');
   let activePanel = 0, reduceMotion = false, ticking = false, lastVw=innerWidth;
+  // A continuous reading layout avoids scroll choreography on short screens
+  // and when the visitor requests reduced motion (including live changes).
+  const readingMedia=matchMedia('(prefers-reduced-motion: reduce), (max-height: 540px) and (min-aspect-ratio: 1/1)');
+  readingMedia.addEventListener('change',requestRender);
   function effectiveScroll(){return Math.max(0,scrollY)}
   function viewport(){return Math.max(document.documentElement.clientHeight,1)}
   // No hay un segundo hero: ambas secuencias comparten exactamente el mismo escenario sticky.
@@ -53,28 +57,30 @@ export function startPortfolioMotion(portfolio: PublicPortfolio): void {
     const leave=1-smooth(scene.end-.030,scene.end,p);
     return lead*leave;
   }
+  // Zero acceleration at each stop keeps the changes of direction unhurried.
+  function characterEase(t){return t*t*t*(t*(t*6-15)+10)}
   function characterPath(p,mobile){
-    // Alternar plano medio, alejamiento y primer plano; evitando la repetición izquierda-derecha.
-    const poses=mobile ? [
+    if(mobile){
+      // One continuous approach, then the same centered framing as before.
+      const t=characterEase(clamp(p/.18));
+      return {shift:0,zoom:lerp(1,1.18,t),moveY:lerp(0,3.2,t)};
+    }
+    // Keep the original framing; settle at the center of each story/cue stop.
+    const poses=[
       {at:0,x:0,z:1,y:0},
-      {at:.13,x:10,z:1.05,y:0},       // Presentación: personaje a la derecha
-      {at:.30,x:-8,z:.88,y:3},        // Estudios: se aleja y deja respirar el texto
-      {at:.47,x:11,z:1.20,y:-3},      // Especialidades: acercamiento
-      {at:.64,x:-7,z:.97,y:1},        // Experiencia: distancia intermedia
-      {at:.81,x:-9,z:1.11,y:-2},      // Herramientas: acercamiento sutil
-      {at:1,x:-8,z:1.06,y:-2}
-    ] : [
-      {at:0,x:0,z:1,y:0},
-      {at:.13,x:24,z:1.35,y:-2},      // Plano cercano a la derecha
-      {at:.30,x:-22,z:1.13,y:3},      // Plano más abierto a la izquierda
-      {at:.47,x:25,z:1.54,y:-6},      // Acercamiento dramático a la derecha
-      {at:.64,x:-23,z:1.27,y:1},      // Se aleja de nuevo
-      {at:.81,x:-28,z:1.46,y:-3},     // Misma posición lateral, distinta profundidad
+      {at:.1925,x:24,z:1.35,y:-2},
+      {at:.365,x:-22,z:1.13,y:3},
+      {at:.54,x:25,z:1.54,y:-6},
+      {at:.7125,x:-23,z:1.27,y:1},
+      {at:.89,x:-28,z:1.46,y:-3},
       {at:1,x:-26,z:1.40,y:-4}
     ];
     for(let i=0;i<poses.length-1;i++){
       const a=poses[i],b=poses[i+1];
-      if(p<=b.at){const t=smooth(a.at,b.at,p);return {shift:lerp(a.x,b.x,t),zoom:lerp(a.z,b.z,t),moveY:lerp(a.y,b.y,t)}};
+      if(p<=b.at){
+        const t=characterEase(clamp((p-a.at)/(b.at-a.at)));
+        return {shift:lerp(a.x,b.x,t),zoom:lerp(a.z,b.z,t),moveY:lerp(a.y,b.y,t)};
+      }
     }
     const last=poses[poses.length-1];
     return {shift:last.x,zoom:last.z,moveY:last.y};
@@ -93,20 +99,7 @@ export function startPortfolioMotion(portfolio: PublicPortfolio): void {
       story.querySelectorAll('a').forEach(a=>a.tabIndex=opacity>.7?0:-1);
     });
     let {shift,zoom,moveY}=characterPath(p,mobile);
-    // En móvil: después de la primera presentación, el personaje se estabiliza,
-    // queda centrado y un poco más cerca; las transiciones continúan en el texto.
     const t=worksTimeline();
-    if(mobile && p>=storyWindows[0].start){
-      const settle=smooth(storyWindows[0].start,storyWindows[0].start+.028,p);
-      shift=lerp(shift,0,settle);
-      zoom=lerp(zoom,1.18,settle);
-      moveY=lerp(moveY,3.2,settle);
-      if(t.local<=-viewport()*.10){
-        shift=0;
-        zoom=1.18;
-        moveY=3.2;
-      }
-    }
     // Mantener intacta la entrada a Servicios sobre el mismo escenario sticky.
     const rise=smooth(-viewport()*.10,viewport()*.52,t.local);
     if(t.local>-viewport()*.10){
@@ -140,9 +133,27 @@ export function startPortfolioMotion(portfolio: PublicPortfolio): void {
     sceneFooter.style.pointerEvents=cueOpacity>.16?'auto':'none';
     const panelW=panels[0]?.getBoundingClientRect().width||innerWidth;
     activePanel=clamp(Math.round(px/panelW),0,panels.length-1);
+    // Offscreen projects must not capture Tab while another scene is visible.
+    panels.forEach(panel=>{
+      const bounds=panel.getBoundingClientRect();
+      panel.inert=t.slide<.998 || bounds.right<=0 || bounds.left>=innerWidth;
+    });
   }
   function render(){
     ticking=false;
+    const reading=readingMedia.matches;
+    document.body.classList.toggle('reading-layout',reading);
+    hero.classList.toggle('reading-layout',reading);
+    if(reading){
+      stories.forEach(story=>{
+        story.setAttribute('aria-hidden','false');
+        story.querySelectorAll('a').forEach(a=>a.tabIndex=0);
+      });
+      worksWindow.style.pointerEvents='auto';
+      panels.forEach(panel=>panel.inert=false);
+      siteHeader.classList.remove('is-scrolled-away','on-dark','works-active','contact-visible');
+      return;
+    }
     renderHero();
     renderWorks();
     const t=worksTimeline();
@@ -175,6 +186,7 @@ export function startPortfolioMotion(portfolio: PublicPortfolio): void {
   let lastCueTarget=-Infinity,lastCueAt=0;
   scrollCue?.addEventListener('click',e=>{
     e.preventDefault();
+    if(readingMedia.matches){stories[0]?.scrollIntoView({behavior:'instant'});return;}
     const now=performance.now();
     const p=heroProgress();
     const effectiveP=now-lastCueAt<1400?Math.max(p,lastCueTarget):p;
@@ -206,15 +218,20 @@ export function startPortfolioMotion(portfolio: PublicPortfolio): void {
   nav.inert=true;
   menuBtn.addEventListener('click',()=>{if(menuBtn.getAttribute('aria-expanded')==='true')closeMenu();else openMenu()});
   $$('a[href^="#"]',nav).forEach(a=>a.addEventListener('click',closeMenu));
+  $$('a[href="#sobre-mi"]').forEach(a=>a.addEventListener('click',e=>{
+    if(!readingMedia.matches)return;
+    e.preventDefault();stories[0]?.scrollIntoView({behavior:'instant'});
+  }));
   $$('a[href="#servicios"]').forEach(a=>a.addEventListener('click',e=>{
     e.preventDefault();closeMenu();
-    const desired=hero.offsetTop+heroDistance()+viewport()*.12;
+    if(readingMedia.matches){works.scrollIntoView({behavior:'instant'});return;}
+    const desired=hero.offsetTop+heroDistance()+worksTimeline().galleryStart+1;
     scrollTo({top:desired,behavior:reduceMotion?'instant':'smooth'});
   }));
-  addEventListener('keydown',e=>{if(e.key==='Escape'){closeMenu();if(serviceDialog.open){e.preventDefault();closeProjectDialog()}else{document.querySelectorAll('dialog[open]').forEach(d=>d.close())}}if(e.key==='ArrowRight'&&inWorks()&&!dialogOpen()){e.preventDefault();goPanel(activePanel+1)}if(e.key==='ArrowLeft'&&inWorks()&&!dialogOpen()){e.preventDefault();goPanel(activePanel-1)}});
+  addEventListener('keydown',e=>{if(e.key==='Escape'){if(!nav.hidden)menuBtn.focus();closeMenu();if(serviceDialog.open){e.preventDefault();closeProjectDialog()}else{document.querySelectorAll('dialog[open]').forEach(d=>d.close())}}if(e.key==='ArrowRight'&&inWorks()&&!dialogOpen()){e.preventDefault();goPanel(activePanel+1)}if(e.key==='ArrowLeft'&&inWorks()&&!dialogOpen()){e.preventDefault();goPanel(activePanel-1)}});
   addEventListener('click',e=>{if(!nav.hidden&&!nav.contains(e.target)&&!menuBtn.contains(e.target))closeMenu()});
   const motion=$('#motion-toggle');motion?.addEventListener('click',()=>{reduceMotion=!reduceMotion;document.body.classList.toggle('reduce-motion',reduceMotion);motion.setAttribute('aria-pressed',String(reduceMotion));motion.title=reduceMotion?'Activar animaciones':'Pausar animaciones';motion.setAttribute('aria-label',motion.title)});
-  function inWorks(){const t=worksTimeline();return t.local>0&&t.local<t.total}
+  function inWorks(){const t=worksTimeline();return !readingMedia.matches&&t.local>0&&t.local<t.total}
   function dialogOpen(){return !!$('dialog[open]')}
   const serviceDialog=$('#service-dialog'),briefDialog=$('#brief-dialog');
   // Data comes from PortfolioService (injected by the Worker or /api/public).
@@ -318,7 +335,7 @@ export function startPortfolioMotion(portfolio: PublicPortfolio): void {
     } else makeAwardsVisible();
   }
 
-  // Carrusel por arrastre: sin flechas ni paginación visible.
+  // Drag, keyboard and visible buttons share the same document positions.
   // Clic corto en una tarjeta: amplia el certificado. Arrastre: desplaza el carrusel.
   const awardsTrack=$('#awards-track');
   if(awardsTrack){
@@ -326,6 +343,26 @@ export function startPortfolioMotion(portfolio: PublicPortfolio): void {
     let drag=null, suppressClick=false;
     cards.forEach(card=>card.querySelectorAll('img').forEach(img=>img.draggable=false));
     const getCardLeft=(card)=>card.offsetLeft-cards[0].offsetLeft;
+    const previousAward=$('#awards-prev'),nextAward=$('#awards-next');
+    function syncAwardControls(){
+      const left=awardsTrack.scrollLeft;
+      const remaining=awardsTrack.scrollWidth-awardsTrack.clientWidth-left;
+      if(previousAward)previousAward.disabled=left<=1;
+      if(nextAward)nextAward.disabled=remaining<=1;
+    }
+    function moveAward(direction){
+      if(!cards.length)return;
+      const x=awardsTrack.scrollLeft;
+      const pos=cards.reduce((best,item,i)=>Math.abs(getCardLeft(item)-x)<Math.abs(getCardLeft(cards[best])-x)?i:best,0);
+      const idx=clamp(pos+direction,0,cards.length-1);
+      awardsTrack.scrollTo({left:getCardLeft(cards[idx]),behavior:readingMedia.matches?'instant':'smooth'});
+      return cards[idx];
+    }
+    previousAward?.addEventListener('click',()=>moveAward(-1));
+    nextAward?.addEventListener('click',()=>moveAward(1));
+    awardsTrack.addEventListener('scroll',syncAwardControls,{passive:true});
+    if(window.ResizeObserver)new ResizeObserver(syncAwardControls).observe(awardsTrack);
+    syncAwardControls();
     function snapToNearest(){
       const x=awardsTrack.scrollLeft;
       const closest=cards.reduce((best,item)=>Math.abs(getCardLeft(item)-x)<Math.abs(getCardLeft(best)-x)?item:best,cards[0]);
@@ -365,11 +402,7 @@ export function startPortfolioMotion(portfolio: PublicPortfolio): void {
     awardsTrack.addEventListener('keydown',e=>{
       if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft')return;
       e.preventDefault();
-      const x=awardsTrack.scrollLeft;
-      const pos=cards.reduce((best,item,i)=>Math.abs(getCardLeft(item)-x)<Math.abs(getCardLeft(cards[best])-x)?i:best,0);
-      const idx=Math.max(0,Math.min(cards.length-1,pos+(e.key==='ArrowRight'?1:-1)));
-      awardsTrack.scrollTo({left:getCardLeft(cards[idx]),behavior:'smooth'});
-      cards[idx].focus({preventScroll:true});
+      moveAward(e.key==='ArrowRight'?1:-1)?.focus({preventScroll:true});
     });
   }
 
@@ -403,7 +436,7 @@ export function startPortfolioMotion(portfolio: PublicPortfolio): void {
     const ease=v=>v*v*(3-2*v);
     const updateContactReveal=()=>{
       scheduled=false;
-      if(reducedMedia.matches){
+      if(readingMedia.matches){
         contactArea.style.setProperty('--reveal-x','0%');
         contactArea.style.pointerEvents='auto';
         return;
@@ -431,8 +464,8 @@ export function startPortfolioMotion(portfolio: PublicPortfolio): void {
       e.preventDefault();
       const mobile=matchMedia('(max-width: 650px)').matches;
       const target=revealShell.getBoundingClientRect().top+scrollY+
-        (reducedMedia.matches?0:(mobile?innerHeight*.015:innerHeight*.31));
-      scrollTo({top:target,behavior:reducedMedia.matches?'instant':'smooth'});
+        (readingMedia.matches?0:(mobile?innerHeight*.015:innerHeight*.31));
+      scrollTo({top:target,behavior:readingMedia.matches?'instant':'smooth'});
     }));
     requestAnimationFrame(updateContactReveal);
   }

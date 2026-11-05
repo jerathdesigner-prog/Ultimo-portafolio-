@@ -2,9 +2,10 @@ import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import app from '../worker/index.mjs';
 // Site build output (run `bun run build:site` first): what the Worker serves.
-const base=new URL('../dist-site/browser/',import.meta.url).pathname;
+const base=fileURLToPath(new URL('../dist-site/browser/',import.meta.url));
 const sql=new DatabaseSync(':memory:');
 const media=new Map();
 const env={

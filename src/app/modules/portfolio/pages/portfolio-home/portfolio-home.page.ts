@@ -9,7 +9,7 @@ import {
   signal,
 } from '@angular/core';
 
-import { HeroEyesComponent } from '../../components/hero-eyes/hero-eyes.component';
+import { HeroCharacterComponent } from '../../components/hero-character/hero-character.component';
 import { ServicePanelComponent } from '../../components/service-panel/service-panel.component';
 import type { PublicPortfolio } from '../../interfaces/portfolio.interface';
 import { startPortfolioMotion } from '../../legacy/portfolio-motion';
@@ -21,7 +21,7 @@ import { PortfolioService } from '../../services/portfolio.service';
  */
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [HeroEyesComponent, ServicePanelComponent],
+  imports: [HeroCharacterComponent, ServicePanelComponent],
   selector: 'app-portfolio-home-page',
   standalone: true,
   templateUrl: './portfolio-home.page.html',

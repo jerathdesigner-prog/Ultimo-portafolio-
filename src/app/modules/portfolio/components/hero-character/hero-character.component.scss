@@ -1,0 +1,30 @@
+:host {
+  display: block;
+  height: 100%;
+  pointer-events: none;
+  position: relative;
+  width: 100%;
+}
+// Both regions share the same original artwork and an immovable boundary
+// below the neck. The subpixel overlap prevents antialiasing from opening a gap.
+.hero-character__body {
+  clip-path: inset(calc(22% - 1px) 0 0);
+}
+.hero-character__head {
+  clip-path: inset(0 0 78% 0);
+  height: 100%;
+  inset: 0;
+  position: absolute;
+  transform-origin: 49% 22%;
+  width: 100%;
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .hero-character__head {
+    will-change: transform;
+  }
+}
+@media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
+  .hero-character__head {
+    transform: none !important;
+  }
+}

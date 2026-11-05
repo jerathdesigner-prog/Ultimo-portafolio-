@@ -1,4 +1,5 @@
 import { SEED } from './seed.mjs';
+import { collect, report } from './analytics.mjs';
 
 // Backend cloud nativo: Cloudflare Workers + D1 (contenido) + R2 (multimedia).
 // No instala Python ni expone los archivos de tu computadora.
@@ -75,7 +76,7 @@ async function website(request,env){
   const u=new URL(request.url);u.pathname='/';u.search='';
   const shell=await env.ASSETS.fetch(new Request(u));
   if(!shell.ok)throw error(500,'La app web no está disponible. Ejecuta el build de Angular.');
-  const html=(await shell.text()).replace('</head>',`<script>window.jmPortfolioData=${safeJson(data)};</script></head>`);
+  const html=(await shell.text()).replace('</head>',`<script>window.jmPortfolioData=${safeJson(data)};</script><script defer src="/static/analytics.js?v=1"></script></head>`);
   return new Response(html,{headers:{'content-type':'text/html; charset=utf-8','cache-control':'no-cache','x-content-type-options':'nosniff','x-frame-options':'SAMEORIGIN'}});
 }
 function originCheck(request){if(['GET','HEAD','OPTIONS'].includes(request.method))return;
@@ -219,6 +220,8 @@ async function handler(request,env){
   if(path==='/api/session'&&request.method==='GET'){const s=await verifyAuth(request,env);return jresp({authenticated:true,username:s.user});}
   if(path==='/api/admin/state'&&request.method==='GET'){await verifyAuth(request,env);return jresp(adminState((await readState(env)).state));}
   if(path==='/api/admin/storage'&&request.method==='GET')return storageStatus(request,env);
+  if(path==='/api/analytics'&&request.method==='POST')return collect(request,env);
+  if(path==='/api/admin/analytics'&&request.method==='GET'){await verifyAuth(request,env);return jresp(await report(env,url.searchParams.get('days')));}
   if(path==='/api/admin/upload'&&request.method==='POST')return uploadFile(request,env);
   if(path.startsWith('/api/admin/'))return adminCrud(request,env,path);
   if(path.startsWith('/uploads/'))return mediaRequest(request,env,path.slice('/uploads/'.length));

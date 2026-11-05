@@ -64,7 +64,8 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "public",
+                "ignore": ["**/*.e2e.ts"]
               }
             ],
             "styles": [
@@ -112,7 +113,8 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "public",
+                "ignore": ["**/*.e2e.ts"]
               }
             ],
             "styles": [

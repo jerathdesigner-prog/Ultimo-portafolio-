@@ -1,30 +1,164 @@
 <!doctype html>
-<html lang="es"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<meta name="theme-color" content="#23312D"/><title>Estudio — Panel Jerath Moreira</title>
-<link rel="stylesheet" href="/static/admin.css?v=storage-r2-fix-1"/><script defer src="/static/admin.js?v=storage-r2-fix-1"></script></head>
-<body>
-<div id="loginScreen" class="login-screen" hidden>
-  <div class="login-decoration"><span class="login-star">✳</span><span class="login-decoration-label">JERATH MOREIRA · ESTUDIO CREATIVO</span><h1>Tu espacio<br>para crear<span class="accent">.</span></h1><p>Un lugar para administrar tus servicios, publicar proyectos y mantener tu portafolio siempre actualizado.</p><div class="login-decor-bottom">SCARAB / GREEN OASIS / SYLVAN GREEN</div></div>
-  <form id="loginForm" class="login-form"><div class="login-mark">JM <span>✳</span></div><p class="eyebrow">ACCESO PRIVADO</p><h2>Bienvenido<br>de nuevo.</h2><label for="loginUser">Usuario</label><input id="loginUser" name="username" autocomplete="username" required value="jerath"/><label for="loginPass">Contraseña</label><div class="pass-wrap"><input id="loginPass" name="password" autocomplete="current-password" type="password" required placeholder="Tu contraseña segura"/><button class="showpass" id="togglePassword" type="button" aria-label="Mostrar contraseña">◉</button></div><button type="submit" class="btn primary login-button" id="loginBtn">Entrar al estudio <span>↗</span></button><p class="login-message" id="loginMessage" role="status"></p><p class="login-foot">Los cambios se guardan en el servidor, no en este navegador.</p></form>
-</div>
-<div id="dashboard" class="dashboard" hidden>
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-brand"><div class="brand-icon">JM<span>✳</span></div><div class="brand-text">JERATH MOREIRA <small>ESTUDIO / CMS</small></div></div>
-    <div class="sidebar-label">ESPACIO DE TRABAJO</div>
-    <nav aria-label="Panel de administración" id="mainNav" class="nav-items">
-      <button type="button" data-view="overview" class="nav-item active"></button>
-      <button type="button" data-view="services" class="nav-item"></button>
-      <button type="button" data-view="projects" class="nav-item"></button>
-      <button type="button" data-view="media" class="nav-item"></button>
-    </nav>
-    <div class="sidebar-bottom"><div class="server-status"><span class="status-dot"></span><div>Servidor conectado<small>Contenido sincronizado</small></div></div><button id="logoutBtn" class="logout-item" type="button"></button></div>
-  </aside>
-  <div class="workspace">
-    <header class="topbar"><div class="topbar-left"><button class="icon-button mobile-menu" id="mobileMenu" type="button" aria-label="Mostrar menú">☰</button><span class="top-breadcrumb">ESTUDIO <span>/</span> <b id="viewCrumb">Resumen</b></span></div><div class="topbar-right"><a class="top-link" href="/" target="_blank" rel="noopener noreferrer"><span id="siteLinkIcon"></span> Ver portafolio ↗</a><span class="topbar-avatar">JM</span></div></header>
-    <main id="main" class="main-content" tabindex="-1"></main>
-  </div>
-</div>
-<div class="overlay" id="editorOverlay" hidden><div class="drawer-backdrop" id="drawerBackdrop"></div><section class="editor-drawer" role="dialog" aria-modal="true" aria-labelledby="editorTitle"><div class="drawer-heading"><div><p class="eyebrow" id="editorEyebrow">EDITAR</p><h2 id="editorTitle">Editar</h2></div><button type="button" class="icon-button" id="closeDrawer" aria-label="Cerrar editor">×</button></div><div class="drawer-body" id="drawerBody"></div><div class="drawer-footer"><button type="button" class="btn secondary" id="cancelEditor">Cancelar</button><button type="button" class="btn primary" id="saveEditor">Guardar cambios <span>↗</span></button></div></section></div>
-<div class="toast-container" id="toastContainer" aria-live="polite"></div>
-<input type="file" id="hiddenFilePicker" multiple accept="image/jpeg,image/png,image/gif,image/webp,image/avif,video/mp4,video/webm,video/quicktime,video/x-m4v,audio/mpeg,audio/mp4,audio/wav,audio/ogg" hidden/>
-</body></html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#f4f7f5" />
+    <title>Estudio — Panel Jerath Moreira</title>
+    <link rel="stylesheet" href="/static/admin.css?v=studio-metrics-2" />
+    <script defer src="/static/admin.js?v=studio-metrics-2"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Saltar al contenido</a>
+    <div id="loginScreen" class="login-screen" hidden>
+      <div class="login-decoration">
+        <div class="login-brand">
+          <img class="login-logo" src="/favicon-jm-original.png" alt="" width="64" height="64" />
+          <div><strong>Jerath Moreira</strong><span>Estudio creativo</span></div>
+        </div>
+        <h1>Tu espacio<br />para crear<span class="accent">.</span></h1>
+        <p>
+          Un lugar para administrar tus servicios, publicar proyectos y mantener
+          tu portafolio siempre actualizado.
+        </p>
+        <div class="login-decor-bottom">Tu trabajo. Tu espacio.</div>
+      </div>
+      <form id="loginForm" class="login-form">
+        <p class="eyebrow">Acceso privado</p>
+        <h2>Bienvenido de nuevo.</h2>
+        <p class="login-intro">Entra a tu estudio y dale forma a tu portafolio.</p>
+        <label for="loginUser">Usuario</label
+        ><input
+          id="loginUser"
+          name="username"
+          autocomplete="username"
+          required
+          value="jerath"
+        /><label for="loginPass">Contraseña</label>
+        <div class="pass-wrap">
+          <input
+            id="loginPass"
+            name="password"
+            autocomplete="current-password"
+            type="password"
+            required
+            placeholder="Tu contraseña segura"
+          /><button
+            class="showpass"
+            id="togglePassword"
+            type="button"
+            aria-label="Mostrar contraseña"
+          >
+            ◉
+          </button>
+        </div>
+        <button type="submit" class="btn primary login-button" id="loginBtn">
+          Entrar al estudio <span>↗</span>
+        </button>
+        <p class="login-message" id="loginMessage" role="status"></p>
+        <p class="login-foot">
+          Los cambios se guardan en el servidor, no en este navegador.
+        </p>
+      </form>
+    </div>
+    <div id="dashboard" class="dashboard" hidden>
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+          <img class="brand-avatar" src="/favicon-jm-original.png" alt="" width="44" height="44" />
+          <div class="brand-text">
+            JERATH MOREIRA <small>Portafolio / Admin</small>
+          </div>
+        </div>
+        <div class="sidebar-label">Espacio de trabajo</div>
+        <nav
+          aria-label="Panel de administración"
+          id="mainNav"
+          class="nav-items"
+        >
+          <button
+            type="button"
+            data-view="overview"
+            class="nav-item active"
+          ></button>
+          <button type="button" data-view="services" class="nav-item"></button>
+          <button type="button" data-view="projects" class="nav-item"></button>
+          <button type="button" data-view="media" class="nav-item"></button>
+          <button type="button" data-view="metrics" class="nav-item"></button>
+        </nav>
+        <div class="sidebar-bottom">
+          <div class="server-status">
+            <span class="status-dot"></span>
+            <div>Servidor conectado<small>Contenido sincronizado</small></div>
+          </div>
+          <button id="logoutBtn" class="logout-item" type="button"></button>
+        </div>
+      </aside>
+      <div class="workspace">
+        <header class="topbar">
+          <div class="topbar-left">
+            <button
+              class="icon-button mobile-menu"
+              id="mobileMenu"
+              type="button"
+              aria-label="Mostrar menú"
+            >
+              ☰</button
+            ><span class="top-breadcrumb"
+              >ESTUDIO <span>/</span> <b id="viewCrumb">Resumen</b></span
+            >
+          </div>
+          <div class="topbar-right">
+            <a
+              class="top-link"
+              href="/"
+              target="_blank"
+              rel="noopener noreferrer"
+              ><span id="siteLinkIcon"></span> Ver portafolio ↗</a
+            ><span class="topbar-avatar">JM</span>
+          </div>
+        </header>
+        <main id="main" class="main-content" tabindex="-1"></main>
+      </div>
+    </div>
+    <div class="overlay" id="editorOverlay" hidden>
+      <div class="drawer-backdrop" id="drawerBackdrop"></div>
+      <section
+        class="editor-drawer"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="editorTitle"
+      >
+        <div class="drawer-heading">
+          <div>
+            <p class="eyebrow" id="editorEyebrow">EDITAR</p>
+            <h2 id="editorTitle">Editar</h2>
+          </div>
+          <button
+            type="button"
+            class="icon-button"
+            id="closeDrawer"
+            aria-label="Cerrar editor"
+          >
+            ×
+          </button>
+        </div>
+        <div class="drawer-body" id="drawerBody"></div>
+        <div class="drawer-footer">
+          <button type="button" class="btn secondary" id="cancelEditor">
+            Cancelar</button
+          ><button type="button" class="btn primary" id="saveEditor">
+            Guardar cambios <span>↗</span>
+          </button>
+        </div>
+      </section>
+    </div>
+    <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+    <input
+      type="file"
+      id="hiddenFilePicker"
+      multiple
+      accept="image/jpeg,image/png,image/gif,image/webp,image/avif,video/mp4,video/webm,video/quicktime,video/x-m4v,audio/mpeg,audio/mp4,audio/wav,audio/ogg"
+      hidden
+    />
+  </body>
+</html>

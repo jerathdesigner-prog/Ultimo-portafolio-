@@ -1,0 +1,188 @@
+/* CardSwap recognition gallery: Scarab, Green Oasis and Sylvan Green. */
+.awards-section--stack .awards-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.2fr);
+  align-items: center;
+  gap: 0 32px;
+  max-width: 1440px;
+  padding-inline: clamp(24px, 5vw, 72px);
+}
+.awards-section--stack .awards-intro {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: end;
+  margin: 0 !important;
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+}
+.awards-section--stack .awards-title {
+  font-size: clamp(34px, 3.6vw, 54px) !important;
+  letter-spacing: -0.035em !important;
+}
+.awards-section--stack .awards-description {
+  max-width: 36ch !important;
+  font-size: 16px !important;
+}
+.awards-section--stack .recognition-navigation {
+  grid-column: 1;
+  grid-row: 2;
+  align-self: start;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 28px 0 0;
+}
+.awards-section--stack .recognition-navigation p {
+  font-size: 12px;
+}
+.awards-section--stack #awards-counter {
+  display: inline-block;
+  margin-bottom: 4px;
+  font-size: 20px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: #23312d;
+}
+.awards-section--stack .awards-carousel {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  min-width: 0;
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+}
+.awards-section--stack .awards-track.card-swap {
+  position: relative;
+  display: block !important;
+  width: 100%;
+  height: 600px;
+  padding: 0 !important;
+  margin: 0;
+  overflow: visible;
+  scroll-snap-type: none;
+  scroll-behavior: auto;
+  touch-action: pan-y;
+  --swap-shade: #23312d;
+  --swap-shadow: 0 24px 50px -22px #23312d55, 0 6px 20px -10px #23312d33;
+}
+.card-swap-stage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--swap-stage-w);
+  height: var(--swap-stage-h);
+  perspective: 900px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.card-swap-slot {
+  position: absolute;
+  top: var(--swap-oy);
+  left: var(--swap-ox);
+  width: var(--swap-w);
+  height: var(--swap-h);
+  margin: calc(var(--swap-h) / -2) 0 0 calc(var(--swap-w) / -2);
+  border-radius: var(--swap-radius);
+  overflow: hidden;
+  isolation: isolate;
+  box-shadow: var(--swap-shadow);
+  pointer-events: auto;
+  user-select: none;
+  touch-action: pan-y;
+  backface-visibility: hidden;
+}
+.card-swap-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  background: var(--swap-shade);
+  opacity: 0;
+  pointer-events: none;
+}
+.awards-section--stack .card-swap-slot > .award-card {
+  display: flex;
+  width: 100% !important;
+  height: 100%;
+  flex: 0 0 auto !important;
+  padding: 12px !important;
+  margin: 0;
+  border-radius: inherit !important;
+  transform: none !important;
+  background: #f4f5e8 !important;
+  border: 1px solid #a1ad76 !important;
+  box-shadow: inset 0 1px 0 #ffffffaa;
+  cursor: inherit !important;
+}
+.awards-section--stack .award-media,
+.awards-section--stack .award-card.is-feature .award-media {
+  order: 2;
+  flex: 1;
+  height: auto !important;
+  min-height: 0;
+  border-radius: 10px !important;
+  background: #fff !important;
+}
+.awards-section--stack .award-media img {
+  transform: none !important;
+}
+.awards-section--stack .award-meta {
+  order: 1;
+  flex: 0 0 auto;
+  min-height: 0 !important;
+  padding: 8px 7px 16px !important;
+}
+.awards-section--stack .award-meta h3 {
+  font-size: 25px !important;
+  margin-bottom: 4px !important;
+}
+.awards-section--stack .award-meta-top {
+  margin-bottom: 8px;
+  font-size: 10px;
+  color: #596947;
+}
+.awards-section--stack .award-meta .award-subtitle {
+  font-size: 15px !important;
+}
+.awards-section--stack .award-meta .award-tag {
+  margin-top: 7px;
+  font-size: 12px !important;
+  color: #586a4d !important;
+}
+.card-swap:focus-visible {
+  outline-offset: 5px;
+}
+@media (max-width: 900px) {
+  .awards-section--stack .awards-shell {
+    display: block;
+  }
+  .awards-section--stack .awards-title {
+    font-size: clamp(34px, 7.6vw, 64px) !important;
+  }
+  .awards-section--stack .awards-description {
+    max-width: 48ch !important;
+  }
+  .awards-section--stack .recognition-navigation {
+    margin: 24px 0 0;
+  }
+  .awards-section--stack .awards-track.card-swap {
+    height: clamp(390px, 66vw, 580px);
+  }
+}
+@media (max-width: 650px) {
+  .awards-section--stack .awards-shell {
+    padding-inline: 20px;
+  }
+  .awards-section--stack .awards-title {
+    font-size: clamp(33px, 8.7vw, 54px) !important;
+  }
+  .awards-section--stack .awards-description {
+    font-size: 15px !important;
+  }
+  .awards-section--stack .recognition-navigation {
+    gap: 12px;
+  }
+}

@@ -1,5 +1,7 @@
 import { SEED } from './seed.mjs';
 import { collect, report } from './analytics.mjs';
+import { legalPage } from './legal.mjs';
+import { consentRequest, privacyReport, purgePrivacy } from './privacy.mjs';
 
 // Backend cloud nativo: Cloudflare Workers + D1 (contenido) + R2 (multimedia).
 // No instala Python ni expone los archivos de tu computadora.
@@ -71,12 +73,18 @@ function publicData(data){
 }
 // La web es la app Angular (dist/browser). El Worker le inyecta el contenido
 // publico para que no tenga que pedir /api/public al cargar.
+function portfolioFallback(data){
+  // Real progressive enhancement, identical for visitors and crawlers. Angular
+  // replaces app-root's children on bootstrap; no hidden SEO-only duplicate.
+  const services=data.services.map(service=>`<li>${esc(service.title)}</li>`).join('');
+  return `<app-root><main class="portfolio-fallback"><h1>Jerath Moreira</h1><p>Diseñador gráfico en Portoviejo, Ecuador. Identidad visual, diseño publicitario, contenido para redes sociales y edición de video.</p><section id="servicios"><h2>Servicios</h2><ul>${services}</ul></section><section id="contacto"><h2>Hablemos de tu proyecto</h2><p>Cuéntame qué necesitas diseñar.</p><a href="mailto:jerathdesigner@gmail.com">jerathdesigner@gmail.com</a><p><a href="https://wa.me/593964143410" rel="noopener noreferrer">Contactar por WhatsApp</a></p></section><nav aria-label="Información legal"><a href="/legal/terminos">Términos</a> · <a href="/legal/privacidad">Privacidad</a> · <a href="/legal/cookies">Cookies</a> · <a href="/legal/reembolsos">Reembolsos</a></nav></main></app-root>`;
+}
 async function website(request,env){
   const {state}=await readState(env), data=publicData(state);
   const u=new URL(request.url);u.pathname='/';u.search='';
   const shell=await env.ASSETS.fetch(new Request(u));
   if(!shell.ok)throw error(500,'La app web no está disponible. Ejecuta el build de Angular.');
-  const html=(await shell.text()).replace('</head>',`<script>window.jmPortfolioData=${safeJson(data)};</script><script defer src="/static/analytics.js?v=1"></script></head>`);
+  const html=(await shell.text()).replace('<app-root></app-root>',portfolioFallback(data)).replace('</head>',`<script>window.jmPortfolioData=${safeJson(data)};</script><link rel="stylesheet" href="/static/privacy.css"><script defer src="/static/privacy.js?v=20261107"></script></head>`);
   return new Response(html,{headers:{'content-type':'text/html; charset=utf-8','cache-control':'no-cache','x-content-type-options':'nosniff','x-frame-options':'SAMEORIGIN'}});
 }
 function originCheck(request){if(['GET','HEAD','OPTIONS'].includes(request.method))return;
@@ -211,6 +219,11 @@ async function mediaRequest(req,env,name){
 }
 async function handler(request,env){
   const url=new URL(request.url),path=url.pathname;
+  if(path.startsWith('/legal/'))return legalPage(path.slice(7));
+  if(path==='/api/consent')return consentRequest(request,env);
+  if(path==='/api/admin/privacy-receipts'&&request.method==='GET'){await verifyAuth(request,env);return privacyReport(env,url);}
+  // The previous font file is quarantined from public builds pending a web license.
+  if(path==='/static/media/19943b6e5746.woff2')return new Response('No encontrado',{status:404});
   if(path==='/'||path==='/index.html')return website(request,env);
   if(path==='/admin'){const u=new URL(request.url);u.pathname='/static/admin.html';const r=await env.ASSETS.fetch(new Request(u));return new Response(r.body,{status:r.status,headers:{...Object.fromEntries(r.headers),'cache-control':'no-store','x-frame-options':'DENY'}});}
   if(path==='/api/health')return jresp({ok:true,storage:'D1 + R2'});
@@ -238,4 +251,4 @@ async function staticAsset(request,env,path){
   out.headers.set('cache-control','public, max-age=31536000, immutable');
   return out;
 }
-export default {async fetch(request,env){try{return await handler(request,env);}catch(e){const st=e.status||500; if(st>=500)console.error('Jerath CMS:',e);return jresp({detail:st>=500?'Error del servidor. Revisa los logs de Workers.':e.message},st);}}};
+export default {async scheduled(event,env,ctx){ctx.waitUntil(purgePrivacy(env));},async fetch(request,env){try{return await handler(request,env);}catch(e){const st=e.status||500; if(st>=500)console.error('Jerath CMS:',e);return jresp({detail:st>=500?'Error del servidor. Revisa los logs de Workers.':e.message},st);}}};

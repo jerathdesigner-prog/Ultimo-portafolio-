@@ -1,0 +1,71 @@
+<div
+  class="folder-float__items"
+  [id]="itemsId()"
+  [inert]="!opened()"
+  [attr.aria-hidden]="!opened()"
+>
+  @for (project of visibleProjects(); track project.id; let index = $index) {
+    <button
+      type="button"
+      class="folder-float__item"
+      [style.--i]="index"
+      [attr.data-service]="project.id"
+      [attr.title]="project.title"
+      [attr.aria-label]="'Ver proyecto: ' + project.title"
+      [tabIndex]="opened() ? 0 : -1"
+      (click)="select()"
+    >
+      <span>{{ project.title }}</span>
+    </button>
+  }
+</div>
+<div class="folder-float__folder">
+  <span class="folder-float__back" aria-hidden="true"></span>
+  <span class="folder-float__paper" aria-hidden="true"></span>
+  <span class="folder-float__front" aria-hidden="true">
+    <span class="folder-float__label">{{ service().title }}</span>
+    <span class="folder-float__sub">{{ countLabel() }}</span>
+  </span>
+  <button
+    #trigger
+    type="button"
+    class="folder-float__trigger"
+    [disabled]="!projects().length"
+    [attr.aria-expanded]="opened()"
+    [attr.aria-controls]="itemsId()"
+    [attr.aria-label]="
+      service().title +
+      ', ' +
+      countLabel() +
+      '. ' +
+      (opened() ? 'Cerrar carpeta' : 'Abrir carpeta')
+    "
+    (click)="toggle()"
+  ></button>
+</div>
+@if (pageCount() > 1) {
+  <nav
+    class="folder-float__pages"
+    aria-label="Páginas de trabajos"
+    [inert]="!opened()"
+    [attr.aria-hidden]="!opened()"
+  >
+    <button
+      type="button"
+      aria-label="Trabajos anteriores"
+      [disabled]="pageIndex() === 0"
+      (click)="changePage(-1)"
+    >
+      <span aria-hidden="true">←</span>
+    </button>
+    <span aria-live="polite">{{ pageIndex() + 1 }} / {{ pageCount() }}</span>
+    <button
+      type="button"
+      aria-label="Siguientes trabajos"
+      [disabled]="pageIndex() + 1 >= pageCount()"
+      (click)="changePage(1)"
+    >
+      <span aria-hidden="true">→</span>
+    </button>
+  </nav>
+}

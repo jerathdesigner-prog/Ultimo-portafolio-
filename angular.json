@@ -65,7 +65,7 @@
               {
                 "glob": "**/*",
                 "input": "public",
-                "ignore": ["**/*.e2e.ts"]
+                "ignore": ["**/*.e2e.ts", "static/media/19943b6e5746.woff2"]
               }
             ],
             "styles": [
@@ -114,7 +114,7 @@
               {
                 "glob": "**/*",
                 "input": "public",
-                "ignore": ["**/*.e2e.ts"]
+                "ignore": ["**/*.e2e.ts", "static/media/19943b6e5746.woff2"]
               }
             ],
             "styles": [

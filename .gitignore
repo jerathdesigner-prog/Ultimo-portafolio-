@@ -74,6 +74,12 @@ bun.lockb
 /output/playwright/
 /playwright-report/
 
+# Local diagnostics and internal legal working notes
+/output/
+/debug.log
+/legal/REVISION.md
+/legal/assets-rights.json
+
 # Local character experiments and review reports (not used by the website)
 /artifacts/
 /tools/blender_mcp_task.py

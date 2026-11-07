@@ -1,0 +1,194 @@
+.bubble-header {
+  --bubble-paper: #f2f1e2;
+  --bubble-ink: #23312d;
+  --bubble-accent: #b0b454;
+  --bubble-edge: clamp(16px, 2.8vw, 40px);
+  height: 80px;
+  padding: max(16px, env(safe-area-inset-top))
+    max(var(--bubble-edge), env(safe-area-inset-right)) 0
+    max(var(--bubble-edge), env(safe-area-inset-left));
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+.bubble-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  min-height: 44px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--bubble-paper);
+  color: var(--bubble-ink);
+  box-shadow: 0 3px 14px #23312d14;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.bubble-toggle {
+  width: 44px;
+  padding: 0;
+  flex-direction: column;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.bubble-line {
+  width: 22px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transition: transform 0.3s ease;
+}
+
+.bubble-toggle[aria-expanded='true'] {
+  background: var(--bubble-accent);
+
+  .bubble-line:first-child {
+    transform: translateY(4px) rotate(45deg);
+  }
+  .bubble-line:last-child {
+    transform: translateY(-4px) rotate(-45deg);
+  }
+}
+
+.bubble-navigation {
+  position: absolute;
+  top: max(68px, calc(env(safe-area-inset-top) + 52px));
+  right: max(var(--bubble-edge), env(safe-area-inset-right));
+  width: min(208px, calc(100vw - 2 * var(--bubble-edge)));
+  max-height: calc(
+    100dvh - 100px - env(safe-area-inset-top) - env(safe-area-inset-bottom)
+  );
+  padding: 10px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  visibility: hidden;
+  pointer-events: none;
+  transition: visibility 0.3s;
+
+  &[hidden] {
+    display: none;
+  }
+  &.is-open {
+    visibility: visible;
+  }
+}
+
+.bubble-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    --rotation: -5deg;
+    --hover: #b0b454;
+    --delay: 0ms;
+  }
+  li:nth-child(2) {
+    --rotation: 5deg;
+    --hover: #d3d9b0;
+    --delay: 35ms;
+  }
+  li:nth-child(3) {
+    --rotation: 4deg;
+    --hover: #b9cbb3;
+    --delay: 70ms;
+  }
+  li:nth-child(4) {
+    --rotation: -4deg;
+    --hover: #d8cb9d;
+    --delay: 105ms;
+  }
+  li:last-child {
+    --rotation: -3deg;
+    --hover: #23312d;
+    --delay: 140ms;
+  }
+}
+
+.bubble-link {
+  --rotation: 0deg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 12px;
+  border-radius: 999px;
+  background: var(--bubble-paper);
+  color: var(--bubble-ink);
+  font: 400 18px/1.15 var(--cool);
+  letter-spacing: -0.025em;
+  text-align: center;
+  box-shadow: 0 4px 16px #23312d1a;
+  opacity: 0;
+  transform: rotate(var(--rotation)) scale(0.94);
+  transition:
+    transform 0.25s ease,
+    opacity 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease;
+
+  span {
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      transform 0.3s ease,
+      opacity 0.2s ease;
+  }
+}
+
+.is-open .bubble-link {
+  opacity: 1;
+  pointer-events: auto;
+  transform: rotate(var(--rotation)) scale(1);
+  transition:
+    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1) var(--delay),
+    opacity 0.2s ease var(--delay),
+    background 0.2s ease,
+    color 0.2s ease;
+
+  span {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: var(--delay);
+  }
+}
+
+.bubble-toggle:hover {
+  background: var(--bubble-accent);
+}
+
+.bubble-link:hover,
+.bubble-link:focus-visible {
+  background: var(--hover);
+  transform: rotate(0deg) scale(1.035);
+  transition-delay: 0s;
+}
+
+.bubble-list li:last-child .bubble-link:hover,
+.bubble-list li:last-child .bubble-link:focus-visible {
+  color: var(--bubble-paper);
+}
+
+.bubble-toggle:focus-visible,
+.bubble-link:focus-visible {
+  outline: 3px solid var(--bubble-ink);
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bubble-toggle,
+  .bubble-line,
+  .bubble-navigation,
+  .bubble-link,
+  .is-open .bubble-link,
+  .bubble-link span {
+    transition: none;
+  }
+}

@@ -205,12 +205,42 @@ svg {
   flex-shrink: 0;
   object-fit: contain;
 }
-.login-brand {display:flex;align-items:center;gap:16px;position:relative}
-.login-brand strong {display:block;font-size:19px;font-weight:600;letter-spacing:-.02em;color:#e2eccf}
-.login-brand span {display:block;font-size:13px;line-height:1.5;color:#c2d2bf;margin-top:2px}
-.login-intro {font-size:14px;line-height:1.7;color:#5c7066;margin:0 0 30px;max-width:34ch}
-.login-form .eyebrow {margin-bottom:12px;color:#607666;font-size:12px;font-weight:500}
-.login-message:empty {display:none}
+.login-brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+}
+.login-brand strong {
+  display: block;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #e2eccf;
+}
+.login-brand span {
+  display: block;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #c2d2bf;
+  margin-top: 2px;
+}
+.login-intro {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #5c7066;
+  margin: 0 0 30px;
+  max-width: 34ch;
+}
+.login-form .eyebrow {
+  margin-bottom: 12px;
+  color: #607666;
+  font-size: 12px;
+  font-weight: 500;
+}
+.login-message:empty {
+  display: none;
+}
 .login-mark {
   font-size: 29px;
   letter-spacing: -0.07em;
@@ -1255,7 +1285,7 @@ svg {
   background: #f7eeee;
 }
 .hint-box {
-  border-left: 3px solid var(--oasis);
+  border-left: 1px solid var(--oasis);
   padding: 13px 17px;
   background: #eef1e5;
   color: #637761;
@@ -2974,4 +3004,90 @@ p {
   color: #2a4839;
   line-height: 1;
   font-weight: 600;
+}
+
+/* Task controls stay readable and reachable with touch, zoom and long content. */
+::selection {
+  background: #dce8c8;
+  color: #233e35;
+}
+input,
+textarea {
+  caret-color: #2c5845;
+}
+.eyebrow {
+  display: none;
+}
+.empty h2 {
+  font-size: 20px;
+  margin: 0 0 10px;
+}
+summary {
+  touch-action: manipulation;
+}
+.icon-action,
+.icon-button,
+.media-actions button,
+.asset-tools button {
+  min-width: 44px;
+  min-height: 44px;
+}
+.service-content h3,
+.service-content p,
+.cover-picker strong,
+.toast {
+  overflow-wrap: anywhere;
+}
+.cover-picker > span {
+  min-width: 0;
+}
+.mobile-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 19;
+  border: 0;
+  background: #122d255c;
+}
+.sidebar.mobile-open {
+  box-shadow: none;
+}
+.sidebar {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.editor-drawer {
+  height: 100dvh;
+}
+.upload-status {
+  overflow-wrap: anywhere;
+}
+.toast-container {
+  pointer-events: none;
+}
+body:has(#editorOverlay:not([hidden])) .toast-container {
+  bottom: calc(88px + env(safe-area-inset-bottom));
+}
+@media (max-width: 720px) {
+  .field-group input,
+  .field-group textarea,
+  .field-group select,
+  .asset-row .asset-properties select,
+  .login-form input,
+  .search-box input,
+  .field-select {
+    font-size: 16px;
+  }
+  .metrics-toolbar,
+  .service-bottom {
+    flex-wrap: wrap;
+  }
+  .service-bottom {
+    gap: 12px;
+  }
+  .main-content {
+    padding-bottom: max(40px, env(safe-area-inset-bottom));
+  }
+  .sidebar {
+    padding-bottom: max(20px, env(safe-area-inset-bottom));
+  }
 }

@@ -10,6 +10,13 @@ live in [`.agents/`](.agents/); open the relevant doc before touching that area.
 
 ## Mandatory rules
 
+- **GitHub destination requested by the owner:** publish completed portfolio changes to
+  `https://github.com/jerathdesigner-prog/Ultimo-portafolio-.git`
+  (remote `ultimo`, branch `main`). Commit and push approved updates there; the owner
+  explicitly requested this as the default workflow. Do not push to the older
+  `origin` repository (`jerathdesigner-prog/Portafolio`). Never include credentials,
+  generated builds, local screenshots/logs or internal legal review notes.
+
 - ⚠️ **Before building anything shared (`src/app/shared/`), check the capability map below** — reuse
   what exists instead of reimplementing it.
 - ⚠️ **If you add, change the contract of, or remove a shared capability, update its map row in the

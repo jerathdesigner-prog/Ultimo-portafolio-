@@ -1,0 +1,106 @@
+/* The existing favicon becomes a scroll-controlled window into Contacto. */
+.contact-reveal-shell.contact-ready.contact-portal {
+  height: calc(100svh + 150svh) !important;
+  margin-top: -100svh !important;
+  overflow: clip !important;
+  background: transparent !important;
+  z-index: 20 !important;
+  pointer-events: none;
+}
+.contact-reveal-shell.contact-ready.contact-portal .contact-section {
+  position: sticky !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 100svh !important;
+  transform: none !important;
+  transition: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  opacity: var(--portal-page-opacity, 0);
+  -webkit-mask-image: url('/static/media/contact-transition-favicon.svg');
+  mask-image: url('/static/media/contact-transition-favicon.svg');
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: var(--portal-size, 180px) var(--portal-size, 180px);
+  mask-size: var(--portal-size, 180px) var(--portal-size, 180px);
+  will-change: mask-size, mask-position;
+}
+/* Pixel placement keeps the icon centered even when mobile contact is taller. */
+.contact-reveal-shell.contact-ready.contact-portal .contact-section {
+  -webkit-mask-position: center
+    calc(50svh - var(--portal-size, 180px) / 2 + var(--portal-y, 75svh));
+  mask-position: center
+    calc(50svh - var(--portal-size, 180px) / 2 + var(--portal-y, 75svh));
+}
+.contact-portal-ink {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  margin-bottom: -100svh;
+  z-index: 30;
+  pointer-events: none;
+  opacity: var(--portal-ink, 1);
+}
+.contact-portal-ink img {
+  position: absolute;
+  left: 50%;
+  top: calc(50svh + var(--portal-y, 75svh));
+  width: var(--portal-size, 180px);
+  height: var(--portal-size, 180px);
+  transform: translate(-50%, -50%);
+  opacity: var(--portal-opacity, 0);
+}
+.awards-section:has(~ .contact-portal) {
+  display: grid;
+  align-content: center;
+  min-height: 100svh;
+  position: sticky !important;
+  top: min(
+    0px,
+    calc(100svh - var(--awards-rendered-height, 100svh))
+  ) !important;
+}
+.awards-section:has(~ .contact-portal) .awards-shell {
+  width: 100%;
+}
+.reading-layout .contact-reveal-shell.contact-ready.contact-portal {
+  height: auto !important;
+  margin-top: 0 !important;
+}
+.reading-layout
+  .contact-reveal-shell.contact-ready.contact-portal
+  .contact-section {
+  position: relative !important;
+  opacity: 1;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+  will-change: auto;
+}
+.reading-layout .contact-portal-ink {
+  display: none;
+}
+.reading-layout .awards-section:has(~ .contact-portal) {
+  position: relative !important;
+  top: auto !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .contact-reveal-shell.contact-ready.contact-portal {
+    height: auto !important;
+    margin-top: 0 !important;
+  }
+  .contact-reveal-shell.contact-ready.contact-portal .contact-section {
+    position: relative !important;
+    opacity: 1;
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+    will-change: auto;
+  }
+  .contact-portal-ink {
+    display: none;
+  }
+  .awards-section:has(~ .contact-portal) {
+    position: relative !important;
+    top: auto !important;
+  }
+}

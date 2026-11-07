@@ -56,6 +56,8 @@
     editor: null,
     pickTarget: '',
     loading: false,
+    uploading: false,
+    saving: false,
     storage: null,
     storageError: null,
   };
@@ -70,6 +72,7 @@
     const wrap = $('#toastContainer'),
       box = document.createElement('div');
     box.className = 'toast' + (error ? ' error' : '');
+    if (error) box.setAttribute('role', 'alert');
     box.textContent = text;
     wrap.append(box);
     setTimeout(() => box.remove(), 4700);
@@ -135,20 +138,30 @@
     $('#siteLinkIcon').innerHTML = ico('external');
     $('#loginForm').addEventListener('submit', login);
     $('#togglePassword').addEventListener('click', () => {
-      $('#loginPass').type =
-        $('#loginPass').type === 'password' ? 'text' : 'password';
+      const show = $('#loginPass').type === 'password';
+      $('#loginPass').type = show ? 'text' : 'password';
+      $('#togglePassword').setAttribute(
+        'aria-label',
+        show ? 'Ocultar contraseña' : 'Mostrar contraseña',
+      );
+      $('#togglePassword').setAttribute('aria-pressed', String(show));
     });
     $$('[data-view]').forEach((el) =>
       el.addEventListener('click', () => setView(el.dataset.view)),
     );
     $('#logoutBtn').addEventListener('click', logout);
     $('#mobileMenu').addEventListener('click', () =>
-      $('#sidebar').classList.toggle('mobile-open'),
+      setMobileMenu(!$('#sidebar').classList.contains('mobile-open')),
     );
+    $('#mobileBackdrop').addEventListener('click', () =>
+      setMobileMenu(false, true),
+    );
+    const mobileLayout = matchMedia('(max-width: 720px)');
+    mobileLayout.addEventListener('change', () => setMobileMenu(false));
+    setMobileMenu(false);
     $('#closeDrawer').addEventListener('click', () => closeEditor());
     $('#cancelEditor').addEventListener('click', () => closeEditor());
     $('#drawerBackdrop').addEventListener('click', () => closeEditor());
-    $('#saveEditor').addEventListener('click', saveEditor);
     $('#hiddenFilePicker').addEventListener('change', (e) => {
       handleFiles([...e.target.files]);
       e.target.value = '';
@@ -176,10 +189,13 @@
       }
     });
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Tab' && store.editor) {
+      const menuOpen = $('#sidebar').classList.contains('mobile-open');
+      if (e.key === 'Tab' && (store.editor || menuOpen)) {
+        const root = store.editor ? $('.editor-drawer') : $('#sidebar');
         const focusable = $$(
-          '.editor-drawer button:not(:disabled),.editor-drawer input,.editor-drawer select,.editor-drawer textarea,.editor-drawer a[href]',
-        );
+          'button:not(:disabled),input:not(:disabled),select:not(:disabled),textarea:not(:disabled),a[href]',
+          root,
+        ).filter((el) => el.getClientRects().length);
         const first = focusable[0],
           last = focusable.at(-1);
         if (e.shiftKey && document.activeElement === first) {
@@ -191,6 +207,7 @@
         }
       }
       if (e.key === 'Escape' && store.editor) closeEditor();
+      else if (e.key === 'Escape' && menuOpen) setMobileMenu(false, true);
     });
     try {
       await api('/api/session');
@@ -223,10 +240,31 @@
     }
   }
   async function logout() {
-    await api('/api/logout', 'POST').catch(() => {});
-    switchLogin(false);
-    store.editor = null;
-    $('#editorOverlay').hidden = true;
+    const button = $('#logoutBtn');
+    button.disabled = true;
+    try {
+      await api('/api/logout', 'POST');
+      closeEditor(true);
+      setMobileMenu(false);
+      switchLogin(false);
+      $('#loginUser').focus();
+    } catch (err) {
+      toast(err.message, true);
+    } finally {
+      button.disabled = false;
+    }
+  }
+  function setMobileMenu(open, restoreFocus = false) {
+    const mobile = matchMedia('(max-width: 720px)').matches;
+    open = mobile && open;
+    $('#sidebar').classList.toggle('mobile-open', open);
+    $('#sidebar').inert = mobile && !open;
+    $('.workspace').inert = open;
+    $('#mobileBackdrop').hidden = !open;
+    $('#mobileMenu').setAttribute('aria-expanded', String(open));
+    document.body.style.overflow = open || store.editor ? 'hidden' : '';
+    if (open) $('#mainNav button').focus();
+    else if (restoreFocus) $('#mobileMenu').focus();
   }
   function setView(v) {
     store.view = [
@@ -240,12 +278,12 @@
       : 'overview';
     store.search = '';
     store.filter = 'all';
-    $('#sidebar').classList.remove('mobile-open');
+    setMobileMenu(false);
     render();
     if (v === 'media') loadStorage();
     if (v === 'metrics') loadMetrics();
     $('#main').focus();
-    history.replaceState(null, '', '#' + v);
+    history.replaceState(null, '', '#' + store.view);
   }
   function render() {
     const names = {
@@ -298,6 +336,8 @@
     return `<div class="${cls}">${ico('audio')}</div>`;
   }
   function projectRows(items) {
+    const filtered =
+      store.view === 'projects' && (store.search || store.filter !== 'all');
     return `<div class="list-card">${
       items.length
         ? items
@@ -309,21 +349,30 @@
               return `<div class="table-row">${avatar(media)}<div class="item-main"><span class="item-title">${E(p.title)}</span><div class="item-meta">${E(svc?.title || 'Sin servicio')} · ${(p.media || []).length} archivos</div></div><div class="item-right"><span class="status-badge ${p.published ? '' : 'draft'}">${p.published ? 'Publicado' : 'Oculto'}</span>${store.view === 'projects' ? `<button type="button" class="icon-action" data-action="move-project-up" data-id="${E(p.id)}" aria-label="Subir proyecto">${ico('up')}</button><button type="button" class="icon-action" data-action="move-project-down" data-id="${E(p.id)}" aria-label="Bajar proyecto">${ico('down')}</button>` : ''}<button type="button" class="icon-action" data-action="edit-project" data-id="${E(p.id)}" aria-label="Editar ${E(p.title)}">${ico('edit')}</button></div></div>`;
             })
             .join('')
-        : `<div class="empty"><div class="empty-icon">${ico('projects')}</div><h3>Aún no hay proyectos</h3><p>Sube tu primer proyecto para empezar a mostrar tu trabajo.</p><button class="btn primary" data-action="new-project">${ico('plus')} Crear proyecto</button></div>`
+        : filtered
+          ? `<div class="empty"><div class="empty-icon">${ico('search')}</div><h2>No hay resultados</h2><p>Prueba otro nombre o limpia los filtros para ver todos tus proyectos.</p><button class="btn secondary" data-action="clear-filters">Limpiar filtros</button></div>`
+          : `<div class="empty"><div class="empty-icon">${ico('projects')}</div><h2>Aún no hay proyectos</h2><p>Sube tu primer proyecto para empezar a mostrar tu trabajo.</p><button class="btn primary" data-action="new-project">${ico('plus')} Crear proyecto</button></div>`
     }</div>`;
   }
   function renderOverview() {
     const items = [...store.data.projects]
       .sort((a, b) => b.order - a.order)
       .slice(0, 6);
+    const previews = items
+      .slice(0, 3)
+      .map((p) => {
+        const media =
+          fromData(p.coverMediaId) || fromData(p.media?.[0]?.mediaId);
+        return `<div class="overview-preview">${avatar(media, 'preview-art')}<span>${E(p.title)}</span></div>`;
+      })
+      .join('');
     return (
       head(
         'TU ESTUDIO',
         'Hola, Jerath.',
         'Todo tu portafolio bajo control, en un solo lugar.',
       ) +
-      stats() +
-      `<div class="welcome-card"><div><p class="eyebrow" style="color:#4d6342">CREA SIN LÍMITES</p><h2>Tus ideas merecen estar a la vista.</h2><p>Organiza tus servicios, agrega videos y fotografías, y publica los cambios cuando quieras.</p></div><button class="btn primary" data-action="new-project">${ico('plus')} Nuevo proyecto</button></div><div class="subsection-heading"><h2>Proyectos recientes</h2><span>${store.data.projects.length} en total</span></div>` +
+      `<div class="overview-intro"><div class="welcome-card"><div class="welcome-copy"><h2>Tus ideas merecen estar a la vista.</h2><p>Organiza tus servicios, agrega videos y fotografías, y publica los cambios cuando quieras.</p><button class="btn primary" data-action="new-project">${ico('plus')} Nuevo proyecto</button></div>${previews ? `<div class="overview-previews" aria-label="Vista previa de tus proyectos">${previews}</div>` : ''}</div>${stats()}</div><div class="subsection-heading"><h2>Proyectos recientes</h2><span>${store.data.projects.length} en total</span></div>` +
       projectRows(items)
     );
   }
@@ -337,15 +386,17 @@
         'new-service',
         'Nuevo servicio',
       ) +
-      `<div class="service-grid">${services
-        .map((s, i) => {
-          const m = fromData(s.coverMediaId);
-          const count = store.data.projects.filter(
-            (p) => p.serviceId === s.id,
-          ).length;
-          return `<article class="service-card"><button type="button" class="service-cover" data-action="edit-service" data-id="${E(s.id)}" aria-label="Editar servicio ${E(s.title)}" title="Haz clic para editar este servicio">${m ? (m.kind === 'image' ? `<img src="${E(m.url)}" alt=""/>` : m.kind === 'video' ? `<video src="${E(m.url)}" preload="metadata" muted></video>` : `<span class="initials">✳</span>`) : `<span class="initials">${E(s.title.slice(0, 2).toUpperCase())}</span>`}<span class="service-num">${String(i + 1).padStart(2, '0')}</span><span class="cover-type">${s.focus === 'video' ? 'Video / Reels' : 'Diseño / Visual'}</span><span class="cover-edit-hint">✎ Editar</span></button><div class="service-content"><h3>${E(s.title)}</h3><p>${E(s.subtitle)}</p><span class="status-badge ${s.published ? '' : 'draft'}">${s.published ? 'Visible' : 'Oculto'}</span></div><div class="service-bottom"><span class="tiny">${count} proyectos</span><div style="display:flex;gap:5px"><button class="icon-action" data-action="move-service-up" data-id="${E(s.id)}" title="Mover a la izquierda" aria-label="Mover antes">${ico('up')}</button><button class="icon-action" data-action="move-service-down" data-id="${E(s.id)}" title="Mover a la derecha" aria-label="Mover después">${ico('down')}</button><button class="btn secondary" data-action="edit-service" data-id="${E(s.id)}">Editar ${ico('edit')}</button></div></div></article>`;
-        })
-        .join('')}</div>`
+      (services.length
+        ? `<div class="service-grid">${services
+            .map((s, i) => {
+              const m = fromData(s.coverMediaId);
+              const count = store.data.projects.filter(
+                (p) => p.serviceId === s.id,
+              ).length;
+              return `<article class="service-card"><button type="button" class="service-cover" data-action="edit-service" data-id="${E(s.id)}" aria-label="Editar servicio ${E(s.title)}" title="Haz clic para editar este servicio">${m ? (m.kind === 'image' ? `<img src="${E(m.url)}" alt=""/>` : m.kind === 'video' ? `<video src="${E(m.url)}" preload="metadata" muted></video>` : `<span class="initials">✳</span>`) : `<span class="initials">${E(s.title.slice(0, 2).toUpperCase())}</span>`}<span class="service-num">${String(i + 1).padStart(2, '0')}</span><span class="cover-type">${s.focus === 'video' ? 'Video / Reels' : 'Diseño / Visual'}</span><span class="cover-edit-hint">✎ Editar</span></button><div class="service-content"><h3>${E(s.title)}</h3><p>${E(s.subtitle)}</p><span class="status-badge ${s.published ? '' : 'draft'}">${s.published ? 'Visible' : 'Oculto'}</span></div><div class="service-bottom"><span class="tiny">${count} proyectos</span><div style="display:flex;gap:5px"><button class="icon-action" data-action="move-service-up" data-id="${E(s.id)}" title="Mover a la izquierda" aria-label="Mover antes">${ico('up')}</button><button class="icon-action" data-action="move-service-down" data-id="${E(s.id)}" title="Mover a la derecha" aria-label="Mover después">${ico('down')}</button><button class="btn secondary" data-action="edit-service" data-id="${E(s.id)}">Editar ${ico('edit')}</button></div></div></article>`;
+            })
+            .join('')}</div>`
+        : `<div class="empty"><div class="empty-icon">${ico('services')}</div><h2>Aún no hay servicios</h2><p>Crea un servicio para organizar los proyectos de tu portafolio.</p><button class="btn primary" data-action="new-service">${ico('plus')} Crear servicio</button></div>`)
     );
   }
   function renderProjects() {
@@ -462,6 +513,7 @@
     if (e.target.id === 'filterService') {
       store.filter = e.target.value;
       render();
+      $('#filterService').focus();
     }
   }
   async function actionClick(e) {
@@ -470,6 +522,13 @@
     const a = b.dataset.action,
       id = b.dataset.id;
     try {
+      if (a === 'clear-filters') {
+        store.search = '';
+        store.filter = 'all';
+        render();
+        $('#searchInput').focus();
+        return;
+      }
       if (a === 'metrics-period') {
         metricsDays = Number(b.dataset.days);
         render();
@@ -597,6 +656,13 @@
     $('#title')?.focus();
   }
   function closeEditor(force = false) {
+    if (!force && (store.uploading || store.saving)) {
+      toast(
+        'Espera a que termine la operación antes de cerrar el editor.',
+        true,
+      );
+      return;
+    }
     if (store.editor && !force) {
       syncEditorFromForm();
       if (
@@ -608,7 +674,8 @@
     const returnFocus = store.editor?.returnFocus;
     store.editor = null;
     $('#dashboard').inert = false;
-    returnFocus?.focus();
+    if (returnFocus?.isConnected) returnFocus.focus();
+    else $('#main').focus();
     $('#editorOverlay').hidden = true;
     document.body.style.overflow = '';
   }
@@ -648,6 +715,11 @@
     }
     html += '</form>';
     $('#drawerBody').innerHTML = html;
+    $('#contentForm').removeAttribute('onsubmit');
+    $('#contentForm').addEventListener('submit', (event) => {
+      event.preventDefault();
+      saveEditor();
+    });
   }
   function syncEditorFromForm() {
     const ed = store.editor;
@@ -670,7 +742,7 @@
   }
   async function saveEditor() {
     const ed = store.editor;
-    if (!ed) return;
+    if (!ed || store.saving || store.uploading) return;
     syncEditorFromForm();
     if (!$('#contentForm').reportValidity()) return;
     if (!ed.draft.title) {
@@ -679,7 +751,9 @@
       return;
     }
     const btn = $('#saveEditor');
+    store.saving = true;
     btn.disabled = true;
+    $('#contentForm').inert = true;
     btn.innerHTML = 'Guardando…';
     try {
       const endpoint = ed.type === 'service' ? 'services' : 'projects';
@@ -688,15 +762,18 @@
       await api(path, ed.originalId ? 'PUT' : 'POST', ed.draft);
       closeEditor(true);
       await refresh();
+      $('#main').focus();
       toast('¡Guardado! Ya está actualizado en tu portafolio.');
     } catch (err) {
       toast(err.message, true);
     } finally {
+      store.saving = false;
+      if ($('#contentForm')) $('#contentForm').inert = false;
       btn.disabled = false;
       btn.innerHTML = 'Guardar cambios <span>↗</span>';
     }
   }
-  function drawerClick(e) {
+  async function drawerClick(e) {
     const b = e.target.closest('[data-action]');
     if (!b) return;
     const a = b.dataset.action;
@@ -732,7 +809,7 @@
         }
         renderEditor();
       } else if (a.startsWith('delete-'))
-        deleteItem(
+        await deleteItem(
           a.slice(7) === 'service' ? 'services' : 'projects',
           b.dataset.id,
         );
@@ -750,8 +827,12 @@
     }
   }
   async function handleFiles(files) {
-    if (!files.length) return;
+    if (!files.length || store.uploading || store.saving) return;
     const kind = store.pickTarget || 'library';
+    const editor = store.editor;
+    store.uploading = true;
+    $('#saveEditor').disabled = true;
+    $('#saveEditor').textContent = 'Subiendo archivos…';
     let counter = 0;
     const msgs = [];
     for (const f of files) {
@@ -776,19 +857,24 @@
         const result = await r.json();
         if (!r.ok) throw new Error(result.detail || 'Fallo al subir');
         store.data.media.push(result);
-        if (kind === 'cover' && store.editor) {
-          store.editor.draft.coverMediaId = result.id;
-        } else if (kind === 'project' && store.editor) {
-          const svc = fromService(store.editor.draft.serviceId);
-          store.editor.draft.media.push({
+        if (editor && editor === store.editor) syncEditorFromForm();
+        if (kind === 'cover' && editor && editor === store.editor) {
+          editor.draft.coverMediaId = result.id;
+        } else if (kind === 'project' && editor && editor === store.editor) {
+          const svc = fromService(editor.draft.serviceId);
+          editor.draft.media.push({
             mediaId: result.id,
             layout:
               result.kind === 'video' && svc?.focus === 'video'
                 ? 'half'
                 : 'full',
             caption: '',
-            order: store.editor.draft.media.length,
+            order: editor.draft.media.length,
           });
+        }
+        if (editor && editor === store.editor && kind !== 'library') {
+          renderEditor();
+          $('#drawerBody').setAttribute('aria-busy', 'true');
         }
         msgs.push('✓ ' + f.name);
       } catch (err) {
@@ -796,10 +882,16 @@
         toast(err.message, true);
       }
     }
-    if (store.editor && kind !== 'library') {
-      renderEditor();
-    } else {
-      await refresh();
+    store.uploading = false;
+    $('#saveEditor').disabled = false;
+    $('#saveEditor').innerHTML = 'Guardar cambios <span>↗</span>';
+    $('#drawerBody').setAttribute('aria-busy', 'false');
+    if (!store.editor || kind === 'library') {
+      try {
+        await refresh();
+      } catch (err) {
+        toast(err.message, true);
+      }
     }
     toast(
       `${msgs.filter((x) => x.startsWith('✓')).length} archivos cargados. ${kind !== 'library' ? 'Recuerda guardar los cambios del proyecto.' : ''}`,

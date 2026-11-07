@@ -9,25 +9,21 @@ test('recognition controls support clicks, keyboard and a document preview', asy
   await expect(page.locator('.jm-preloader')).toHaveCount(0, {
     timeout: 15000,
   });
-  const previous = page.locator('#awards-prev');
-  const next = page.locator('#awards-next');
   const track = page.locator('#awards-track');
-  await previous.scrollIntoViewIfNeeded();
-  await expect(previous).toBeDisabled();
-  await next.click();
-  await expect
-    .poll(() => track.evaluate((element) => element.scrollLeft))
-    .toBeGreaterThan(100);
-  await expect(previous).toBeEnabled();
-  await previous.focus();
-  await page.keyboard.press('Enter');
-  await expect
-    .poll(() => track.evaluate((element) => element.scrollLeft))
-    .toBeLessThan(2);
-  const bounds = await next.boundingBox();
-  expect(bounds!.height).toBeGreaterThanOrEqual(44);
-  expect(bounds!.width).toBeGreaterThanOrEqual(44);
-  await page.locator('.award-card').first().click();
+  await expect(track).toHaveClass(/card-swap/);
+  await track.scrollIntoViewIfNeeded();
+  await track.focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(track.locator('[data-front]')).toHaveAttribute(
+    'data-swap-index',
+    '1',
+  );
+  await page.keyboard.press('ArrowLeft');
+  await expect(track.locator('[data-front]')).toHaveAttribute(
+    'data-swap-index',
+    '0',
+  );
+  await track.locator('[data-front] .award-card').click();
   await expect(page.locator('#award-dialog')).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(page.locator('#award-dialog')).not.toBeVisible();

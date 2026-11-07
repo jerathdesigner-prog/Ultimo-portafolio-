@@ -1,0 +1,65 @@
+:host {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: min(760px, 100svh);
+  min-height: 480px;
+  align-self: start;
+  grid-column: 1;
+  grid-row: 1;
+  isolation: isolate;
+}
+.lanyard-surface {
+  position: absolute;
+  inset: 0;
+}
+.lanyard-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  pointer-events: auto;
+  cursor: pointer;
+}
+.fallback-strap {
+  display: block;
+  width: 30px;
+  height: 27%;
+  flex-shrink: 0;
+  background: #23312d;
+  box-shadow:
+    inset 3px 0 #b0b45455,
+    inset -3px 0 #b0b45455;
+}
+:host(.is-nearby) .fallback-strap {
+  background: #23312d url('/static/media/contact-band.svg') center / auto 30px
+    repeat-y;
+}
+.fallback-clip {
+  width: 20px;
+  height: 26px;
+  flex-shrink: 0;
+  border: 3px solid #8b938d;
+  border-radius: 7px;
+  background: linear-gradient(90deg, #89948b, #edf0e8, #89948b);
+}
+.lanyard-fallback img {
+  display: block;
+  width: auto;
+  height: 58%;
+  max-width: 74%;
+  object-fit: contain;
+  border-radius: 14px;
+  box-shadow: 10px 24px 36px -20px #23312d66;
+}
+:host(.is-ready) .lanyard-fallback {
+  visibility: hidden;
+  pointer-events: none;
+}
+@media (max-width: 650px) {
+  :host {
+    height: 480px;
+    min-height: 0;
+  }
+}

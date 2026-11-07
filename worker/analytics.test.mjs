@@ -3,6 +3,8 @@ import { DatabaseSync } from 'node:sqlite';
 import { test } from 'node:test';
 import { collect, report } from './analytics.mjs';
 import app from './index.mjs';
+import { consentRequest } from './privacy.mjs';
+import { LEGAL_VERSION } from './legal.mjs';
 
 test('analytics deduplicates, aggregates real events, validates origins and excludes bots', async () => {
   const sql = new DatabaseSync(':memory:');
@@ -30,6 +32,12 @@ test('analytics deduplicates, aggregates real events, validates origins and excl
       },
     },
   };
+  const accepted = await consentRequest(new Request('https://example.com/api/consent', {
+    method: 'POST',
+    headers: { origin: 'https://example.com', 'content-type': 'application/json' },
+    body: JSON.stringify({ purpose: 'cookies', analytics: true, version: LEGAL_VERSION }),
+  }), env);
+  const cookie = accepted.headers.get('set-cookie').split(';')[0];
   const send = (body, headers = {}) =>
     collect(
       new Request('https://example.com/api/analytics', {
@@ -38,6 +46,7 @@ test('analytics deduplicates, aggregates real events, validates origins and excl
           origin: 'https://example.com',
           'user-agent': 'Firefox',
           'cf-connecting-ip': '192.0.2.1',
+          cookie,
           ...headers,
         },
         body: JSON.stringify(body),
@@ -50,6 +59,8 @@ test('analytics deduplicates, aggregates real events, validates origins and excl
     type: 'page_view',
     referrer: 'https://google.com/search?q=private',
   };
+  assert.equal((await send(page, { cookie: '' })).status, 204);
+  assert.equal(sql.prepare("SELECT count(*) AS n FROM sqlite_master WHERE name='analytics_events'").get().n, 0);
   assert.equal((await send(page)).status, 204);
   await send(page);
   await send({

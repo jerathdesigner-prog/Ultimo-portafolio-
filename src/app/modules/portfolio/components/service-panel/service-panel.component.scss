@@ -1,0 +1,71 @@
+:host(.service-panel) {
+  display: flex;
+  flex-direction: column;
+  width: 100vw !important;
+  flex: 0 0 100vw !important;
+  height: 100svh;
+  padding: clamp(100px, 14svh, 140px) clamp(20px, 6vw, 92px) 32px !important;
+  overflow: hidden;
+}
+:host(.service-panel) > header {
+  flex-shrink: 0;
+  min-height: 0;
+  margin: 0;
+}
+:host(.service-panel) h3 {
+  max-width: 18ch;
+  margin: 0;
+  color: #e7eacb;
+  font-size: clamp(38px, 5vw, 76px);
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+app-service-folder {
+  z-index: 3;
+  margin: auto;
+}
+:host-context(body.reading-layout) {
+  width: 100% !important;
+  flex: initial !important;
+  min-width: 0;
+  height: auto !important;
+  min-height: 480px;
+  padding: 36px 32px 28px !important;
+}
+:host-context(body.reading-layout) app-service-folder {
+  width: min(540px, 100%);
+  height: 350px;
+}
+:host-context(.reading-layout) h3 {
+  font-size: clamp(32px, 4vw, 54px);
+}
+@media (max-width: 650px) {
+  :host(.service-panel) {
+    padding-top: 104px !important;
+    padding-bottom: 28px !important;
+  }
+  :host(.service-panel) h3 {
+    font-size: clamp(36px, 8.5vw, 54px);
+  }
+  :host-context(body.reading-layout) {
+    min-height: 450px;
+    padding: 32px 24px 24px !important;
+  }
+}
+@media (max-height: 650px) and (min-width: 651px) {
+  :host(.service-panel) {
+    padding-top: 88px !important;
+    padding-bottom: 16px !important;
+  }
+  :host(.service-panel) h3 {
+    font-size: 42px;
+  }
+}
+@media (max-width: 650px) and (max-height: 650px) {
+  :host(.service-panel) {
+    padding-top: 88px !important;
+  }
+  :host(.service-panel) h3 {
+    font-size: clamp(32px, 8.5vw, 36px);
+  }
+}

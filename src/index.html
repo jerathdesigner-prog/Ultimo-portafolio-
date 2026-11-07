@@ -12,12 +12,83 @@
     />
     <meta content="#23312D" name="theme-color" />
     <meta
-      content="Jerath Moreira, diseñador gráfico y director creativo. Flyers, social media, identidades visuales y edición de videos."
+      content="Jerath Moreira, diseñador gráfico en Portoviejo, Ecuador. Identidad visual, diseño publicitario, contenido para redes sociales y edición de video."
       name="description"
     />
-    <title>Jerath Moreira — Diseño &amp; Dirección Creativa</title>
+    <title>Jerath Moreira — Diseñador gráfico</title>
+    <link rel="canonical" href="https://jerathmoreira.com/" />
+    <link
+      rel="alternate"
+      type="text/plain"
+      href="/llms.txt"
+      title="Información del portafolio en texto"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_EC" />
+    <meta property="og:site_name" content="Jerath Moreira" />
+    <meta property="og:title" content="Jerath Moreira — Diseñador gráfico" />
+    <meta
+      property="og:description"
+      content="Diseñador gráfico en Portoviejo, Ecuador. Identidad visual, diseño publicitario, contenido para redes sociales y edición de video."
+    />
+    <meta property="og:url" content="https://jerathmoreira.com/" />
+    <meta
+      property="og:image"
+      content="https://jerathmoreira.com/static/media/a0ea6851412f.webp"
+    />
+    <meta
+      property="og:image:alt"
+      content="Personaje ilustrado de Jerath Moreira"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Jerath Moreira — Diseñador gráfico" />
+    <meta
+      name="twitter:description"
+      content="Identidad visual, diseño publicitario, contenido para redes sociales y edición de video desde Portoviejo, Ecuador."
+    />
+    <meta
+      name="twitter:image"
+      content="https://jerathmoreira.com/static/media/a0ea6851412f.webp"
+    />
+    <meta
+      name="twitter:image:alt"
+      content="Personaje ilustrado de Jerath Moreira"
+    />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://jerathmoreira.com/#website",
+            "url": "https://jerathmoreira.com/",
+            "name": "Jerath Moreira",
+            "inLanguage": "es",
+            "publisher": { "@id": "https://jerathmoreira.com/#person" }
+          },
+          {
+            "@type": "Person",
+            "@id": "https://jerathmoreira.com/#person",
+            "name": "Jerath Moreira",
+            "url": "https://jerathmoreira.com/",
+            "jobTitle": "Diseñador gráfico",
+            "sameAs": [
+              "https://www.instagram.com/jerathmoreira/",
+              "https://www.tiktok.com/@jerathmoreira1"
+            ]
+          }
+        ]
+      }
+    </script>
+    <noscript
+      ><style>
+        .jm-preloader {
+          display: none !important;
+        }
+      </style></noscript
+    >
     <link rel="icon" type="image/png" href="/static/media/d087ebf02905.png" />
-    <!-- Download the hero (LCP) and the font with the HTML, not after Angular boots. -->
+    <!-- Download the hero (LCP) with the HTML, not after Angular boots. -->
     <link
       rel="preload"
       as="image"
@@ -26,13 +97,289 @@
       imagesizes="(max-width: 650px) 100vw, 120vw"
       fetchpriority="high"
     />
-    <link
-      rel="preload"
-      as="font"
-      type="font/woff2"
-      href="/static/media/19943b6e5746.woff2"
-      crossorigin
-    />
+    <!-- Inline so every cube effect is ready before the main stylesheet loads. -->
+    <style id="jm-preloader-styles">
+      /* Cube animation adapted from Uiverse.io by dexter-st; portfolio palette. */
+      html.jm-preloading,
+      html.jm-preloading body {
+        overflow: hidden !important;
+      }
+
+      .jm-preloader {
+        --jm-portal-y: 108vh;
+        --jm-portal-size: 0px;
+        position: fixed;
+        inset: 0;
+        z-index: 50000;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        background: var(--scarab, #23312d);
+        color: var(--sylvan, #e7eacb);
+        isolation: isolate;
+        font-family: var(--cool, 'Coolvetica', Arial, sans-serif);
+      }
+
+      .jm-preloader__center {
+        position: relative;
+        transform: translateY(-1.5vh);
+      }
+
+      .jm-preloader .wrapper-grid {
+        --animation-duration: 2.1s;
+        --cube-color: #23312d00;
+        --highlight-color: var(--oasis, #b0b454);
+        --cube-width: clamp(28px, 8vw, 48px);
+        --cube-height: var(--cube-width);
+        position: relative;
+        display: grid;
+        grid-template-columns: repeat(8, var(--cube-width));
+        width: calc(8 * var(--cube-width));
+        height: var(--cube-height);
+        perspective: 350px;
+        font-size: clamp(20px, 4.5vw, 28px);
+        font-weight: 400;
+        line-height: 1;
+        color: transparent;
+      }
+
+      .jm-preloader .cube {
+        position: relative;
+        transform-style: preserve-3d;
+        animation: jm-cube-translate var(--animation-duration) ease-in-out
+          infinite;
+      }
+
+      .jm-preloader .face {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: var(--cube-width);
+        height: var(--cube-height);
+        background: var(--cube-color);
+        animation:
+          jm-cube-color var(--animation-duration) ease-in-out infinite,
+          jm-cube-edge var(--animation-duration) ease-in-out infinite;
+        animation-delay: inherit;
+      }
+
+      .jm-preloader :is(.face-left, .face-right, .face-back, .face-front) {
+        box-shadow:
+          inset 0 0 2px 1px #e7eacb18,
+          inset 0 0 12px 1px #e7eacb0d;
+      }
+
+      .jm-preloader .face-front {
+        color: #e7eacba6;
+        transform: rotateY(0deg) translateZ(calc(var(--cube-width) / 2));
+        animation:
+          jm-cube-color var(--animation-duration) ease-in-out infinite,
+          jm-cube-letter var(--animation-duration) ease-in-out infinite,
+          jm-cube-edge var(--animation-duration) ease-in-out infinite;
+        animation-delay: inherit;
+      }
+
+      .jm-preloader .face-back {
+        transform: rotateY(180deg) translateZ(calc(var(--cube-width) / 2));
+        opacity: 0.6;
+      }
+
+      .jm-preloader .face-left {
+        transform: rotateY(-90deg) translateZ(calc(var(--cube-width) / 2));
+        opacity: 0.6;
+      }
+
+      .jm-preloader .face-right {
+        transform: rotateY(90deg) translateZ(calc(var(--cube-width) / 2));
+        opacity: 0.6;
+      }
+
+      .jm-preloader .face-top {
+        height: var(--cube-width);
+        transform: rotateX(90deg) translateZ(calc(var(--cube-width) / 2));
+        opacity: 0.8;
+      }
+
+      .jm-preloader .face-bottom {
+        height: var(--cube-width);
+        transform: rotateX(-90deg)
+          translateZ(calc(var(--cube-height) - var(--cube-width) * 0.5));
+        opacity: 0.8;
+      }
+
+      .jm-preloader .cube:nth-child(1) {
+        z-index: 0;
+        animation-delay: 0s;
+      }
+      .jm-preloader .cube:nth-child(2) {
+        z-index: 1;
+        animation-delay: 0.2s;
+      }
+      .jm-preloader .cube:nth-child(3) {
+        z-index: 2;
+        animation-delay: 0.4s;
+      }
+      .jm-preloader .cube:nth-child(4) {
+        z-index: 3;
+        animation-delay: 0.6s;
+      }
+      .jm-preloader .cube:nth-child(5) {
+        z-index: 3;
+        animation-delay: 0.8s;
+      }
+      .jm-preloader .cube:nth-child(6) {
+        z-index: 2;
+        animation-delay: 1s;
+      }
+      .jm-preloader .cube:nth-child(7) {
+        z-index: 1;
+        animation-delay: 1.2s;
+      }
+      .jm-preloader .cube:nth-child(8) {
+        z-index: 0;
+        animation-delay: 1.4s;
+      }
+
+      @keyframes jm-cube-translate {
+        0%,
+        40%,
+        100% {
+          transform: translateZ(-2px);
+        }
+        30% {
+          transform: translateZ(16px) translateY(-1px);
+        }
+      }
+
+      @keyframes jm-cube-color {
+        0%,
+        50%,
+        100% {
+          background-color: var(--cube-color);
+        }
+        10% {
+          background-color: var(--highlight-color);
+        }
+      }
+
+      @keyframes jm-cube-letter {
+        0%,
+        50%,
+        100% {
+          color: #e7eacba6;
+          filter: none;
+        }
+        30% {
+          color: var(--sylvan, #e7eacb);
+          filter: drop-shadow(0 14px 10px var(--highlight-color));
+        }
+      }
+
+      @keyframes jm-cube-edge {
+        0%,
+        40%,
+        100% {
+          box-shadow:
+            inset 0 0 2px 1px #e7eacb18,
+            inset 0 0 12px 1px #e7eacb0d;
+        }
+        30% {
+          box-shadow: 0 0 2px 0 var(--highlight-color);
+        }
+      }
+
+      /* Preserve the original circular reveal once the real content is ready. */
+      @property --jm-portal-y {
+        syntax: '<length>';
+        inherits: false;
+        initial-value: 0px;
+      }
+      @property --jm-portal-size {
+        syntax: '<length>';
+        inherits: false;
+        initial-value: 0px;
+      }
+
+      .jm-preloader.jm-revealing {
+        -webkit-mask-image: radial-gradient(
+          circle at 50% var(--jm-portal-y),
+          transparent 0 var(--jm-portal-size),
+          #000 calc(var(--jm-portal-size) + 1px)
+        );
+        mask-image: radial-gradient(
+          circle at 50% var(--jm-portal-y),
+          transparent 0 var(--jm-portal-size),
+          #000 calc(var(--jm-portal-size) + 1px)
+        );
+        animation: jmPortalOpen 1.62s cubic-bezier(0.22, 0.75, 0.2, 1) forwards;
+      }
+
+      .jm-preloader.jm-revealing .jm-preloader__center {
+        opacity: 0;
+        transform: translateY(-9vh) scale(0.97);
+        transition:
+          opacity 0.19s ease,
+          transform 0.36s ease;
+      }
+
+      @keyframes jmPortalOpen {
+        0% {
+          --jm-portal-y: 108vh;
+          --jm-portal-size: 0px;
+          opacity: 1;
+        }
+        33% {
+          --jm-portal-y: 50vh;
+          --jm-portal-size: 46px;
+          opacity: 1;
+        }
+        53% {
+          --jm-portal-y: 50vh;
+          --jm-portal-size: 82px;
+          opacity: 1;
+        }
+        95% {
+          --jm-portal-y: 50vh;
+          --jm-portal-size: 150vmax;
+          opacity: 1;
+        }
+        100% {
+          --jm-portal-y: 50vh;
+          --jm-portal-size: 150vmax;
+          opacity: 0;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .jm-preloader .cube,
+        .jm-preloader .face {
+          animation: none;
+        }
+        .jm-preloader .face {
+          box-shadow: none;
+          background: transparent;
+        }
+        .jm-preloader .face-front {
+          color: var(--sylvan, #e7eacb);
+        }
+        .jm-preloader.jm-revealing {
+          -webkit-mask-image: none;
+          mask-image: none;
+          animation: jmEasyFade 0.2s linear forwards;
+        }
+        .jm-preloader.jm-revealing .jm-preloader__center {
+          transform: none;
+          transition: none;
+        }
+      }
+
+      @keyframes jmEasyFade {
+        to {
+          opacity: 0;
+        }
+      }
+    </style>
   </head>
   <body>
     <!-- Preloader independiente: la página de abajo sigue preparando su contenido. -->
@@ -44,33 +391,89 @@
       aria-live="polite"
     >
       <div class="jm-preloader__center">
-        <div class="jm-preloader__track" aria-hidden="true">
-          <span class="jm-preloader__fill" id="jm-preloader-fill"></span>
-        </div>
-        <div class="jm-preloader__label">
-          CARGANDO<span class="jm-preloader__dots" aria-hidden="true"></span>
+        <!-- Cube animation adapted from Uiverse.io by dexter-st. -->
+        <div class="wrapper-grid" aria-hidden="true">
+          <div class="cube">
+            <span class="face face-front">C</span>
+            <span class="face face-back"></span>
+            <span class="face face-left"></span>
+            <span class="face face-right"></span>
+            <span class="face face-top"></span>
+            <span class="face face-bottom"></span>
+          </div>
+          <div class="cube">
+            <span class="face face-front">A</span>
+            <span class="face face-back"></span>
+            <span class="face face-left"></span>
+            <span class="face face-right"></span>
+            <span class="face face-top"></span>
+            <span class="face face-bottom"></span>
+          </div>
+          <div class="cube">
+            <span class="face face-front">R</span>
+            <span class="face face-back"></span>
+            <span class="face face-left"></span>
+            <span class="face face-right"></span>
+            <span class="face face-top"></span>
+            <span class="face face-bottom"></span>
+          </div>
+          <div class="cube">
+            <span class="face face-front">G</span>
+            <span class="face face-back"></span>
+            <span class="face face-left"></span>
+            <span class="face face-right"></span>
+            <span class="face face-top"></span>
+            <span class="face face-bottom"></span>
+          </div>
+          <div class="cube">
+            <span class="face face-front">A</span>
+            <span class="face face-back"></span>
+            <span class="face face-left"></span>
+            <span class="face face-right"></span>
+            <span class="face face-top"></span>
+            <span class="face face-bottom"></span>
+          </div>
+          <div class="cube">
+            <span class="face face-front">N</span>
+            <span class="face face-back"></span>
+            <span class="face face-left"></span>
+            <span class="face face-right"></span>
+            <span class="face face-top"></span>
+            <span class="face face-bottom"></span>
+          </div>
+          <div class="cube">
+            <span class="face face-front">D</span>
+            <span class="face face-back"></span>
+            <span class="face face-left"></span>
+            <span class="face face-right"></span>
+            <span class="face face-top"></span>
+            <span class="face face-bottom"></span>
+          </div>
+          <div class="cube">
+            <span class="face face-front">O</span>
+            <span class="face face-back"></span>
+            <span class="face face-left"></span>
+            <span class="face face-right"></span>
+            <span class="face face-top"></span>
+            <span class="face face-bottom"></span>
+          </div>
         </div>
       </div>
     </div>
 
     <script id="jm-preloader-script">
-      /* Barra vinculada a hitos reales: DOM, tipografía, imagen hero y carga del documento.
-   No se simula un porcentaje ni se impone una espera de 10-15 segundos. */
+      /* Espera un ciclo y medio y la carga del contenido antes de revelar la web. */
       (() => {
         'use strict';
         const loader = document.getElementById('jm-preloader');
-        const fill = document.getElementById('jm-preloader-fill');
-        if (!loader || !fill) return;
+        if (!loader) return;
         const startedAt = performance.now();
         const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
         const stages = [
-          { weight: 15, promise: Promise.resolve() },
           {
-            weight: 20,
             promise: document.fonts ? document.fonts.ready : Promise.resolve(),
           },
           {
-            weight: 30,
             promise: (async () => {
               const img =
                 document.getElementById('hero-character') ||
@@ -108,7 +511,6 @@
             })(),
           },
           {
-            weight: 35,
             promise:
               document.readyState === 'complete'
                 ? Promise.resolve()
@@ -117,13 +519,17 @@
                   ),
           },
         ];
-        let completedWeight = 0;
         let finished = false;
         const complete = () => {
           if (finished) return;
           finished = true;
-          fill.style.width = '100%';
-          const minVisible = reduced ? 0 : 250;
+          const cube = loader.querySelector('.cube');
+          const lastCube = loader.querySelector('.cube:last-child');
+          const cycleMs =
+            parseFloat(getComputedStyle(cube).animationDuration) * 1000;
+          const lastDelayMs =
+            parseFloat(getComputedStyle(lastCube).animationDelay) * 1000;
+          const minVisible = reduced ? 0 : cycleMs * 1.5 + lastDelayMs;
           const remaining = Math.max(
             0,
             minVisible - (performance.now() - startedAt),
@@ -150,14 +556,7 @@
           );
         };
         Promise.all(
-          stages.map((stage) =>
-            Promise.resolve(stage.promise)
-              .catch(() => {})
-              .then(() => {
-                completedWeight += stage.weight;
-                fill.style.width = completedWeight + '%';
-              }),
-          ),
+          stages.map((stage) => Promise.resolve(stage.promise).catch(() => {})),
         ).then(complete);
         // Salvaguarda para imágenes o fuentes fallidas: la web continúa siendo accesible.
         setTimeout(complete, 9500);

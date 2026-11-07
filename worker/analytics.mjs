@@ -1,4 +1,5 @@
 import { Temporal } from 'temporal-polyfill';
+import { analyticsAllowed } from './privacy.mjs';
 
 const ZONE = 'America/Guayaquil';
 const empty = () => new Response(null, { status: 204 });
@@ -29,6 +30,7 @@ async function fingerprint(secret, value) {
 export async function collect(req, env) {
   if (req.headers.get('origin') !== new URL(req.url).origin)
     return new Response(null, { status: 403 });
+  if (!await analyticsAllowed(req, env)) return empty();
   const ua = req.headers.get('user-agent') || '';
   if (
     !env.SESSION_SECRET ||

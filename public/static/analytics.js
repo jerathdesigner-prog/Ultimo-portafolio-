@@ -2,7 +2,7 @@
   'use strict';
   if (navigator.doNotTrack === '1' || navigator.globalPrivacyControl) return;
   let session;
-  try {
+  function startSession() { try {
     session = sessionStorage.getItem('jm-visit');
     if (!session) {
       session = crypto.randomUUID();
@@ -10,8 +10,10 @@
     }
   } catch {
     session = crypto.randomUUID();
-  }
+  } }
   const send = (type, project = '') => {
+    if (window.jmAnalyticsAllowed !== true) return;
+    if (!session) startSession();
     const body = JSON.stringify({
       id: crypto.randomUUID(),
       session,
@@ -28,6 +30,10 @@
     }).catch(() => {});
   };
   send('page_view');
+  window.addEventListener('jm-privacy-change', () => {
+    if (!window.jmAnalyticsAllowed) { session = undefined; return; }
+    send('page_view');
+  });
   document.addEventListener('click', (event) => {
     const project = event.target.closest('[data-service]');
     if (project) send('project_view', project.dataset.service);

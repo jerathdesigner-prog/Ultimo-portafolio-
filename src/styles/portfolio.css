@@ -1,5 +1,5 @@
 /* Portfolio design system, migrated verbatim from the legacy plantilla.html. */
-@font-face{font-family:"Coolvetica";src:url("/static/media/19943b6e5746.woff2") format("woff2");font-style:normal;font-weight:400 900;font-display:swap;}
+/* Webfont disabled pending an independent web license or Adobe web project. */
 :root{--scarab:#23312D;--oasis:#B0B454;--sylvan:#E7EACB;--sage:#E7EACB;--paper:#f2f1e2;--dark:#23312D;--ink:#f4f3e7;--muted:rgba(244,243,231,.68);--script:'Caveat','Segoe Print','Comic Sans MS',cursive;--sans:'Coolvetica','DM Sans',Arial,sans-serif;--cool:'Coolvetica','DM Sans',Arial,sans-serif;font-synthesis:none;color-scheme:light}
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:5rem}
@@ -1443,89 +1443,3 @@ body.project-open .awards-section::after{opacity:0!important;animation:none!impo
   .service-dialog #detail-title{font-size:clamp(34px,8.5vw,55px)!important;line-height:1.04!important}
   .service-dialog .detail-content{padding:34px 24px 45px!important}
 }
-
-
-/* === JERATH / LOCAL INTRO PRELOADER — no external dependencies === */
-html.jm-preloading, html.jm-preloading body { overflow:hidden!important; }
-.jm-preloader {
-  --jm-portal-y: 108vh;
-  --jm-portal-size: 0px;
-  position:fixed;inset:0;z-index:50000;
-  display:grid;place-items:center;overflow:hidden;
-  background:var(--oasis,#B0B454);
-  color:var(--scarab,#23312D);
-  isolation:isolate;
-  font-family:var(--cool,'Coolvetica',Arial,sans-serif);
-}
-/* Reutiliza el mapa de textura y la animación granular originales del portafolio. */
-.jm-preloader::before {
-  content:"";position:absolute;inset:-18px;z-index:1;pointer-events:none;
-  background:var(--scarab,#23312D);opacity:.14;
-  -webkit-mask-image:var(--jm-paper-texture);
-  mask-image:var(--jm-paper-texture);
-  -webkit-mask-size:512px 512px;mask-size:512px 512px;
-  -webkit-mask-repeat:repeat;mask-repeat:repeat;
-  animation:jmGrainFrames 5.4s steps(1,end) infinite;
-}
-.jm-preloader__center {
-  position:relative;z-index:2;width:min(74vw,830px);
-  display:flex;flex-direction:column;align-items:center;
-  transform:translateY(-1.5vh);
-}
-.jm-preloader__track {
-  width:100%;height:clamp(44px,7.6vw,112px);
-  border:clamp(3px,.55vw,7px) solid var(--scarab,#23312D);
-  border-radius:999px;padding:clamp(5px,.9vw,12px);
-  position:relative;overflow:hidden;
-  background:rgba(35,49,45,.055);
-  box-shadow:inset 0 2px 0 rgba(35,49,45,.09),0 2px 0 rgba(255,255,255,.14);
-}
-.jm-preloader__fill {
-  height:100%;width:0%;display:block;position:relative;overflow:hidden;
-  border-radius:999px;background:var(--sylvan,#E7EACB);
-  transition:width .36s cubic-bezier(.22,1,.36,1);
-  box-shadow:inset 0 2px 5px rgba(255,255,255,.34);
-}
-.jm-preloader__fill::after {
-  content:"";position:absolute;inset:0;
-  background:linear-gradient(100deg,transparent 20%,rgba(255,255,255,.68) 50%,transparent 79%);
-  transform:translateX(-115%);animation:jmLoaderShine 1.6s ease-in-out infinite;
-}
-.jm-preloader__label {
-  margin-top:clamp(27px,4.2vw,52px);
-  font-size:clamp(32px,5.2vw,72px);line-height:1;
-  font-weight:400;letter-spacing:.045em;text-transform:uppercase;
-  text-align:center;white-space:nowrap;
-}
-.jm-preloader__dots {display:inline-block;width:1.25em;text-align:left;letter-spacing:0;}
-.jm-preloader__dots::after {content:"...";display:inline-block;overflow:hidden;vertical-align:bottom;width:0;animation:jmLoadingDots 1.3s steps(4,end) infinite;}
-@keyframes jmLoadingDots {to {width:1.06em}}
-@keyframes jmLoaderShine {0%,12%{transform:translateX(-115%)}80%,100%{transform:translateX(115%)}}
-/* Se abre una ventana circular sobre la web cargada: sube desde abajo, se detiene en el centro y crece. */
-@property --jm-portal-y { syntax:"<length>"; inherits:false; initial-value:0px; }
-@property --jm-portal-size { syntax:"<length>"; inherits:false; initial-value:0px; }
-.jm-preloader.jm-revealing {
-  -webkit-mask-image:radial-gradient(circle at 50% var(--jm-portal-y),transparent 0 var(--jm-portal-size),#000 calc(var(--jm-portal-size) + 1px));
-  mask-image:radial-gradient(circle at 50% var(--jm-portal-y),transparent 0 var(--jm-portal-size),#000 calc(var(--jm-portal-size) + 1px));
-  animation:jmPortalOpen 1.62s cubic-bezier(.22,.75,.2,1) forwards;
-}
-.jm-preloader.jm-revealing .jm-preloader__center {opacity:0;transform:translateY(-9vh) scale(.97);transition:opacity .19s ease,transform .36s ease;}
-@keyframes jmPortalOpen {
-  0%   {--jm-portal-y:108vh;--jm-portal-size:0px;opacity:1;}
-  33%  {--jm-portal-y:50vh; --jm-portal-size:46px;opacity:1;}
-  53%  {--jm-portal-y:50vh; --jm-portal-size:82px;opacity:1;}
-  95%  {--jm-portal-y:50vh; --jm-portal-size:150vmax;opacity:1;}
-  100% {--jm-portal-y:50vh; --jm-portal-size:150vmax;opacity:0;}
-}
-@media(max-width:600px){
- .jm-preloader__center{width:82vw;}
- .jm-preloader__track{height:56px;border-width:3px;padding:6px;}
- .jm-preloader__label{margin-top:32px;font-size:clamp(32px,8vw,44px);}
-}
-@media(prefers-reduced-motion:reduce){
- .jm-preloader::before,.jm-preloader__fill::after,.jm-preloader__dots::after{animation:none!important}
- .jm-preloader__dots::after{width:1.06em}
- .jm-preloader__fill{transition:none}
- .jm-preloader.jm-revealing{-webkit-mask-image:none;mask-image:none;animation:jmEasyFade .2s linear forwards}
-}
-@keyframes jmEasyFade{to{opacity:0}}

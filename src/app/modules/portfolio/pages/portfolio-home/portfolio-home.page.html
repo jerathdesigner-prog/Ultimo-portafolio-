@@ -1,9 +1,16 @@
 @if (content(); as portfolio) {
 <a class="skip-link" href="#servicios">Ir a los servicios</a>
-<header class="site-header" id="site-header">
-<a aria-label="Jerath Moreira, inicio" class="wordmark" href="#inicio"><span>JERATH MOREIRA</span><small>Diseñador Gráfico &amp; Director Creativo</small></a>
-<div class="header-actions"><button aria-controls="navigation" aria-expanded="false" class="menu-button" id="menu-toggle">MENÚ</button></div>
-<nav aria-label="Navegación principal" class="navigation" hidden="" id="navigation"><a href="#inicio">Inicio</a><a href="#sobre-mi">Sobre mí</a><a href="#servicios">Servicios</a><a href="#reconocimientos">Reconocimientos</a><a href="#contacto">Tu proyecto</a></nav>
+<header class="site-header bubble-header" id="site-header">
+<button aria-controls="navigation" aria-expanded="false" aria-label="Abrir menú" class="bubble-toggle" id="menu-toggle" type="button"><span aria-hidden="true" class="bubble-line"></span><span aria-hidden="true" class="bubble-line"></span></button>
+<nav aria-label="Navegación principal" class="bubble-navigation" hidden="" id="navigation">
+  <ul class="bubble-list">
+    <li><a class="bubble-link" href="#inicio"><span>Inicio</span></a></li>
+    <li><a class="bubble-link" href="#sobre-mi"><span>Sobre mí</span></a></li>
+    <li><a class="bubble-link" href="#servicios"><span>Servicios</span></a></li>
+    <li><a class="bubble-link" href="#reconocimientos"><span>Reconocimientos</span></a></li>
+    <li><a class="bubble-link" href="#contacto"><span>Tu proyecto</span></a></li>
+  </ul>
+</nav>
 </header>
 <main>
 <section aria-label="Conoce a Jerath Moreira" class="narrative" id="inicio">
@@ -11,7 +18,7 @@
 <div class="scene-wash"></div>
 
 <div class="character-wrap" id="character-wrap"><div class="character-float"><app-hero-character /></div></div>
-<div class="intro-copy" id="intro-copy"><h1>Jerath Moreira</h1><p class="hero-role">Diseñador Gráfico &amp; Director Creativo</p><p class="hero-description">Transformo ideas en imágenes que conectan.<br/>Un poco de estrategia, mucha creatividad y carácter propio.</p></div>
+<div class="intro-copy intro-copy--portfolio" id="intro-copy"><h1 aria-label="PORTAFOLIO"><app-portfolio-tech-text aria-hidden="true" /></h1><p class="hero-role">Jerath Moreira · Diseñador gráfico</p><p class="hero-description">Transformo ideas en imágenes que conectan.<br/>Un poco de estrategia, mucha creatividad y carácter propio.</p></div>
 <div class="story-copy jm-story jm-left jm-introduction" id="story-one" data-story="1">
   <h2>¡Hola!<br/>Soy Jerath.</h2>
   <p>Soy diseñador gráfico y creador de contenido visual. Transformo ideas en diseños que conectan con las personas y transmiten la identidad de cada marca.</p>
@@ -33,14 +40,13 @@
   </ul>
 </div>
 <div class="story-copy jm-story jm-right jm-experience" id="story-four" data-story="4">
-  <p class="eyebrow jm-kicker">2023 — 2027 · ACTUALMENTE ACTIVO</p>
   <h2>Experiencia<br/>creativa.</h2>
   <p class="jm-strong">Diseñador Gráfico Freelance</p>
+  <p class="jm-career-date">2023 — 2027 · Actualmente activo</p>
   <p>Trabajo con marcas, emprendimientos y proyectos personales creando piezas publicitarias, contenido digital e identidades visuales.</p>
   <p>Cada proyecto es una oportunidad para comunicar mejor y destacar.</p>
 </div>
 <div class="story-copy jm-story jm-right jm-tools-scene" id="story-five" data-story="5">
-  <p class="eyebrow jm-kicker">MIS RECURSOS</p>
   <h2>Herramientas.</h2>
   <div class="jm-software" aria-label="Software de diseño">
     <span><b>Ps</b> Photoshop</span>
@@ -54,28 +60,25 @@
 </div>
 <div class="scene-footer"><a class="scroll-cue" href="#sobre-mi" aria-label="Desliza a la siguiente presentación"><span class="scroll-label">DESLIZA</span><span aria-hidden="true" class="scroll-arrow">↓</span></a></div>
 <section aria-label="Servicios creativos" class="works-section" id="servicios"><div class="works-stage"><div aria-hidden="true" class="works-launch-copy" id="works-launch-copy"><h2>Servicios</h2></div>
-<div class="works-window"><div class="works-track" id="works-track">@for (service of portfolio.services; track service.id; let index = $index) {
-<article appServicePanel class="service-panel" [attr.id]="service.slug || service.id" [service]="service" [number]="index + 1" [content]="portfolio"></article>
+<div class="works-window"><div class="works-track" id="works-track">@for (service of portfolio.services; track service.id) {
+<article appServicePanel class="service-panel" [attr.id]="service.slug || service.id" [service]="service" [content]="portfolio"></article>
 } @empty {
 <article class="service-panel"><header><h3>Próximamente</h3><p>Estamos preparando nuevos proyectos.</p></header></article>
 }</div></div>
 </div></section></div><span aria-hidden="true" class="about-anchor" id="sobre-mi"></span>
 </section>
-<section aria-labelledby="awards-heading" class="awards-section" id="reconocimientos">
+<section aria-labelledby="awards-heading" class="awards-section awards-section--stack" id="reconocimientos">
 <div class="awards-shell">
 <div class="awards-intro">
 <div><p class="awards-kicker">MI TRAYECTORIA · 2021 — 2026</p><h2 class="awards-title" id="awards-heading">Reconocimientos<span>.</span></h2><p class="awards-description">Proyectos premiados, participación creativa y formación. Cada documento cuenta una parte del recorrido.</p></div>
 
 </div>
 <div class="recognition-navigation">
-  <p>Explora mis reconocimientos</p>
-  <div aria-label="Recorrer reconocimientos" class="awards-buttons" role="group">
-    <button aria-controls="awards-track" aria-label="Reconocimiento anterior" disabled id="awards-prev" type="button"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m14 6-6 6 6 6M8 12h12"/></svg></button>
-    <button aria-controls="awards-track" aria-label="Siguiente reconocimiento" id="awards-next" type="button"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m10 6 6 6-6 6M4 12h12"/></svg></button>
-  </div>
+  <p><span id="awards-counter">01 / 12</span><br/>Arrastra para explorar</p>
+
 </div>
 <div aria-label="Reconocimientos y certificados" aria-roledescription="carrusel" class="awards-carousel">
-<div aria-label="Certificados: arrastra horizontalmente para recorrerlos, pulsa uno para ampliarlo" class="awards-track" id="awards-track" tabindex="0">
+<div aria-label="Certificados: arrastra la tarjeta o usa las flechas para recorrerlos; pulsa para ampliar" appRecognitionSwap class="awards-track" id="awards-track" tabindex="0">
 <button aria-label="Ampliar: Premio 2025: Ceibo de Oro — Postales Patrimoniales" class="award-card is-feature" data-award-caption="Certificado de ganador en la XIV Exposición de Proyectos Integradores de la USGP, categoría Proyecto Integrador de Saberes, con el proyecto «Postales Patrimoniales»." data-award-title="Ceibo de Oro — Postales Patrimoniales" type="button">
 <div class="award-media"><img alt="Premio 2025: Ceibo de Oro — Postales Patrimoniales" decoding="async" loading="lazy" src="/static/media/5d7fdabcf82d.webp"/></div>
 <div class="award-meta"><div class="award-meta-top"><span>Premio</span><span>2025</span></div><h3>Ceibo de Oro</h3><p class="award-subtitle">Postales Patrimoniales</p><p class="award-tag">Ganador · Proyecto Integrador de Saberes</p></div>
@@ -118,22 +121,29 @@
 
 </div>
 </section><dialog aria-labelledby="award-dialog-title" class="award-dialog" id="award-dialog"><button aria-label="Cerrar reconocimiento" class="dialog-close">×</button><div class="award-dialog-inner"><div class="award-dialog-media"><img alt="Vista ampliada del reconocimiento" id="award-dialog-image" loading="eager"/></div><div class="award-dialog-copy"><p class="eyebrow">Detalle del documento</p><h3 id="award-dialog-title">Reconocimiento</h3><p id="award-dialog-caption"></p><p class="award-dialog-tip">Toca fuera del cuadro o usa ESC para cerrar</p></div></div></dialog>
-<section class="contact-section" id="contacto"><div aria-hidden="true" class="contact-character"></div><div class="contact-copy"><h2>Diseño con<br/>criterio e intención.</h2><p>Cuéntame qué tienes en mente.<br/>Démosle forma, personalidad y dirección.</p><a class="contact-cta" href="https://wa.me/593964143410" target="_blank" rel="noopener noreferrer" aria-label="Hablemos de tu proyecto por WhatsApp"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 11.9a8.5 8.5 0 0 1-12.6 7.45L3.2 20.8l1.5-4.6a8.5 8.5 0 1 1 15.8-4.3Z"/><path d="M8.3 8.15c-.4 0-.8.55-.8 1.14 0 2.22 3.48 5.74 5.77 5.85.63.03 1.32-.37 1.5-.98.07-.22.03-.42-.21-.54l-1.53-.74c-.22-.1-.39-.07-.54.13l-.58.75c-1.08-.47-2.07-1.5-2.5-2.56l.65-.65c.15-.15.19-.32.12-.52l-.58-1.57a.36.36 0 0 0-.37-.31H8.3Z"/></svg><span>Hablemos de tu proyecto</span></a></div><footer class="site-footer">
+<section class="contact-section contact-section--lanyard" id="contacto"><app-contact-lanyard /><div class="contact-copy"><h2>Diseño con<br/>criterio e intención.</h2><p>Cuéntame qué tienes en mente.<br/>Démosle forma, personalidad y dirección.</p><a appContactSpecular class="contact-cta" href="https://wa.me/593964143410" target="_blank" rel="noopener noreferrer" aria-label="Hablemos de tu proyecto por WhatsApp"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M12 2a10 10 0 0 0-8.67 14.98L2 22l5.18-1.36A10 10 0 1 0 12 2ZM12 3.7a8.3 8.3 0 0 0-7.18 12.46l.31.52-.82 2.99 3.07-.8.48.28A8.3 8.3 0 1 0 12 3.7ZM8.15 7.9c-.3 0-.64.22-.78.5-.32.6-.33 1.45.12 2.42.86 1.92 2.69 3.79 4.76 4.75 1.2.56 2.17.48 2.68.17.28-.18.56-.65.6-1.06.03-.18-.08-.3-.25-.38l-2.07-.94c-.2-.09-.38-.06-.51.1l-.7.86c-.1.12-.23.14-.4.07-1.3-.58-2.65-1.89-3.28-3.26-.07-.15-.05-.28.07-.38l.79-.74c.14-.13.17-.28.1-.46l-.89-1.96c-.07-.2-.15-.3-.24-.3Z"/></svg><span>Hablemos de tu proyecto</span></a></div><footer class="site-footer">
 <span class="footer-copyright">© <span id="year">2026</span> JERATH MOREIRA</span>
 <nav aria-label="Redes sociales de Jerath Moreira" class="footer-socials">
 <a aria-label="Instagram de Jerath Moreira" class="social-icon" href="https://www.instagram.com/jerathmoreira/" rel="noopener noreferrer" target="_blank" title="Instagram">
-<svg aria-hidden="true" fill="none" focusable="false" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewbox="0 0 24 24"><rect height="19" rx="5.5" width="19" x="2.5" y="2.5"></rect><circle cx="12" cy="12" r="4.25"></circle><circle cx="17.8" cy="6.25" fill="currentColor" r="1.15" stroke="none"></circle></svg>
+<svg aria-hidden="true" fill="none" focusable="false" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewBox="0 0 24 24"><rect height="19" rx="5.5" width="19" x="2.5" y="2.5"></rect><circle cx="12" cy="12" r="4.25"></circle><circle cx="17.8" cy="6.25" fill="currentColor" r="1.15" stroke="none"></circle></svg>
 </a>
 <a aria-label="TikTok de Jerath Moreira" class="social-icon" href="https://www.tiktok.com/@jerathmoreira1" rel="noopener noreferrer" target="_blank" title="TikTok">
-<svg aria-hidden="true" fill="currentColor" focusable="false" viewbox="0 0 24 24"><path d="M16.9 2.3h-3.2v12.05a3.08 3.08 0 1 1-3.08-3.07c.3 0 .57.04.84.12V8.1a6.37 6.37 0 1 0 5.44 6.29V8.55c1.35 1.03 3.02 1.6 4.82 1.6V6.9a4.8 4.8 0 0 1-4.82-4.6Z"></path></svg>
+<svg aria-hidden="true" fill="currentColor" focusable="false" viewBox="0 0 24 24"><path transform="translate(-0.94 0.464)" d="M16.9 2.3h-3.2v12.05a3.08 3.08 0 1 1-3.08-3.07c.3 0 .57.04.84.12V8.1a6.37 6.37 0 1 0 5.44 6.29V8.55c1.35 1.03 3.02 1.6 4.82 1.6V6.9a4.8 4.8 0 0 1-4.82-4.6Z"></path></svg>
 </a>
 <a aria-label="WhatsApp al 0964143410" class="social-icon" href="https://wa.me/593964143410" rel="noopener noreferrer" target="_blank" title="WhatsApp: 0964143410">
-<svg aria-hidden="true" fill="none" focusable="false" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.65" viewbox="0 0 24 24"><path d="M20.8 11.9a8.75 8.75 0 0 1-12.87 7.68L3 21l1.47-4.7A8.76 8.76 0 1 1 20.8 11.9Z"></path><path d="M8.15 7.9c-.3 0-.64.22-.78.5-.32.6-.33 1.45.12 2.42.86 1.92 2.69 3.79 4.76 4.75 1.2.56 2.17.48 2.68.17.28-.18.56-.65.6-1.06.03-.18-.08-.3-.25-.38l-2.07-.94c-.2-.09-.38-.06-.51.1l-.7.86c-.1.12-.23.14-.4.07-1.3-.58-2.65-1.89-3.28-3.26-.07-.15-.05-.28.07-.38l.79-.74c.14-.13.17-.28.1-.46l-.89-1.96c-.07-.2-.15-.3-.24-.3Z" stroke-width="1.1"></path></svg>
+<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M12 2a10 10 0 0 0-8.67 14.98L2 22l5.18-1.36A10 10 0 1 0 12 2ZM12 3.7a8.3 8.3 0 0 0-7.18 12.46l.31.52-.82 2.99 3.07-.8.48.28A8.3 8.3 0 1 0 12 3.7ZM8.15 7.9c-.3 0-.64.22-.78.5-.32.6-.33 1.45.12 2.42.86 1.92 2.69 3.79 4.76 4.75 1.2.56 2.17.48 2.68.17.28-.18.56-.65.6-1.06.03-.18-.08-.3-.25-.38l-2.07-.94c-.2-.09-.38-.06-.51.1l-.7.86c-.1.12-.23.14-.4.07-1.3-.58-2.65-1.89-3.28-3.26-.07-.15-.05-.28.07-.38l.79-.74c.14-.13.17-.28.1-.46l-.89-1.96c-.07-.2-.15-.3-.24-.3Z"/></svg>
 </a>
 </nav>
 <a class="footer-top" href="#inicio">VOLVER ARRIBA ↑</a>
 </footer></section>
 </main>
+<footer class="jm-legal-footer"><nav class="jm-legal-links" aria-label="Información legal">
+  <a href="/legal/terminos">Términos</a>
+  <a href="/legal/privacidad">Privacidad</a>
+  <a href="/legal/cookies">Cookies</a>
+  <a href="/legal/reembolsos">Cancelaciones y reembolsos</a>
+  <button type="button" data-privacy-settings>Preferencias de privacidad</button>
+</nav></footer>
 <dialog aria-labelledby="detail-title" class="service-dialog" id="service-dialog">
 <button aria-label="Cerrar proyecto" class="dialog-close" type="button">×</button>
 <div aria-label="Imagen de presentación del proyecto" class="detail-banner" id="detail-banner" role="img"></div>
@@ -145,5 +155,7 @@
 </section>
 </div><div class="portfolio-project-gallery" hidden="" id="project-gallery"></div>
 </dialog>
-<dialog aria-labelledby="brief-title" class="brief-dialog" id="brief-dialog"><button aria-label="Cerrar solicitud" class="dialog-close">×</button><div class="brief-intro"><p class="eyebrow">EL PRIMER PASO</p><h2 id="brief-title">Cuéntame tu idea.</h2><p>Prepara una solicitud para compartir con Jerath.<br/>Puedes copiarla o descargarla al terminar.</p></div><form id="brief-form"><label for="client-name">¿Cómo te llamas?<span>*</span></label><input autocomplete="name" id="client-name" maxlength="120" name="name" placeholder="Tu nombre o el de tu marca" required=""/><fieldset><legend>¿Qué quieres crear?</legend><div class="brief-options"><label><input name="service" type="checkbox" value="Flyers"/>Flyers</label><label><input name="service" type="checkbox" value="Social media"/>Social media</label><label><input name="service" type="checkbox" value="Carruseles"/>Carruseles</label><label><input name="service" type="checkbox" value="Identidad visual"/>Identidad visual</label><label><input name="service" type="checkbox" value="Edición de video"/>Edición de video</label><label><input name="service" type="checkbox" value="Dirección creativa"/>Dirección creativa</label></div></fieldset><label for="client-idea">Tu idea en pocas palabras<span>*</span></label><textarea id="client-idea" maxlength="3000" name="idea" placeholder="Qué necesitas, para quién es y qué te gustaría transmitir…" required="" rows="4"></textarea><label for="client-date">¿Tienes una fecha en mente?</label><input id="client-date" name="date" type="date"/><div class="brief-buttons"><button class="light-button" type="submit">Copiar solicitud ↗</button><button class="outline-button" id="download-brief" type="button">Descargar .txt ↓</button></div><p class="brief-notice">Tu solicitud se prepara en tu dispositivo. No se envía automáticamente.</p><p class="brief-status" id="brief-status" role="status"></p><textarea aria-label="Solicitud lista para copiar" hidden="" id="brief-output" readonly=""></textarea></form></dialog>
+<dialog aria-labelledby="brief-title" class="brief-dialog" id="brief-dialog"><button aria-label="Cerrar solicitud" class="dialog-close">×</button><div class="brief-intro"><p class="eyebrow">EL PRIMER PASO</p><h2 id="brief-title">Cuéntame tu idea.</h2><p>Prepara una solicitud para compartir con Jerath.<br/>Puedes copiarla o descargarla al terminar.</p></div><form id="brief-form"><label for="client-name">Nombre o alias (opcional)</label><input autocomplete="name" id="client-name" maxlength="80" name="name" placeholder="Tu nombre, alias o marca"/><fieldset><legend>¿Qué quieres crear?</legend><div class="brief-options"><label><input name="service" type="checkbox" value="Flyers"/>Flyers</label><label><input name="service" type="checkbox" value="Social media"/>Social media</label><label><input name="service" type="checkbox" value="Carruseles"/>Carruseles</label><label><input name="service" type="checkbox" value="Identidad visual"/>Identidad visual</label><label><input name="service" type="checkbox" value="Edición de video"/>Edición de video</label><label><input name="service" type="checkbox" value="Dirección creativa"/>Dirección creativa</label></div></fieldset><label for="client-idea">Tu idea en pocas palabras<span>*</span></label><textarea id="client-idea" maxlength="3000" name="idea" placeholder="Qué necesitas, para quién es y qué te gustaría transmitir…" required="" rows="4"></textarea><label for="client-date">¿Tienes una fecha en mente?</label><input id="client-date" name="date" type="date"/><label class="jm-legal-check"><input type="checkbox" name="terms" required/><span>He leído y acepto los <a href="/legal/terminos" target="_blank" rel="noopener">términos para preparar esta solicitud</a>.</span></label>
+<label class="jm-legal-check"><input type="checkbox" name="privacy" required/><span>He leído la <a href="/legal/privacidad" target="_blank" rel="noopener">política de privacidad</a> y la información sobre el justificante de esta acción.</span></label>
+<div class="brief-buttons"><button class="light-button" type="submit">Copiar solicitud ↗</button><button class="outline-button" id="download-brief" type="button">Descargar .txt ↓</button></div><p class="brief-notice">Tu idea permanece en tu dispositivo. Al copiar o descargar guardamos solo un justificante de esta acción y las casillas; no enviamos tu nombre ni la idea. No incluyas datos sensibles. Esto no contrata un servicio.</p><p class="brief-status" id="brief-status" role="status"></p><textarea aria-label="Solicitud lista para copiar" hidden="" id="brief-output" readonly=""></textarea></form></dialog>
 }

@@ -9,8 +9,12 @@ import {
   signal,
 } from '@angular/core';
 
+import { ContactLanyardComponent } from '../../components/contact-lanyard/contact-lanyard.component';
 import { HeroCharacterComponent } from '../../components/hero-character/hero-character.component';
+import { PortfolioTechTextComponent } from '../../components/portfolio-tech-text/portfolio-tech-text.component';
 import { ServicePanelComponent } from '../../components/service-panel/service-panel.component';
+import { ContactSpecularDirective } from '../../directives/contact-specular.directive';
+import { RecognitionSwapDirective } from '../../directives/recognition-swap.directive';
 import type { PublicPortfolio } from '../../interfaces/portfolio.interface';
 import { startPortfolioMotion } from '../../legacy/portfolio-motion';
 import { PortfolioService } from '../../services/portfolio.service';
@@ -21,9 +25,17 @@ import { PortfolioService } from '../../services/portfolio.service';
  */
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [HeroCharacterComponent, ServicePanelComponent],
+  imports: [
+    HeroCharacterComponent,
+    ContactLanyardComponent,
+    PortfolioTechTextComponent,
+    ServicePanelComponent,
+    ContactSpecularDirective,
+    RecognitionSwapDirective,
+  ],
   selector: 'app-portfolio-home-page',
   standalone: true,
+  styleUrl: './portfolio-home.page.scss',
   templateUrl: './portfolio-home.page.html',
 })
 export class PortfolioHomePage {

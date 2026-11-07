@@ -1,5 +1,11 @@
 import { expect, test } from '@playwright/test';
 
+const serviceContent = {
+  media: [],
+  projects: [{ id: 'work', serviceId: 'design', title: 'Tuna Podcast' }],
+  services: [{ id: 'design', slug: 'design', title: 'Identidad visual' }],
+};
+
 test('character scroll motion is gradual and the first mobile scene has no zoom jump', async ({
   page,
 }) => {
@@ -77,17 +83,26 @@ test('services navigation reveals usable project controls', async ({
   page,
 }) => {
   await page.setViewportSize({ height: 844, width: 390 });
+  await page.route('**/api/public', (route) =>
+    route.fulfill({ json: serviceContent }),
+  );
   await page.goto('/');
   await expect(page.locator('.jm-preloader')).toHaveCount(0, {
     timeout: 15000,
   });
   await page.locator('#menu-toggle').click();
   await page.locator('#navigation a[href="#servicios"]').click();
-  const project = page.locator('.service-list button').first();
-  await expect
-    .poll(async () => (await project.boundingBox())!.x)
-    .toBeLessThan(100);
-  await project.click();
+  await expect(page.locator('.service-panel').first()).toHaveJSProperty(
+    'inert',
+    false,
+  );
+  const trigger = page.locator('.folder-float__trigger').first();
+  await trigger.focus();
+  await page.keyboard.press('ArrowDown');
+  const project = page.locator('.folder-float__item').first();
+  await expect(project).toBeInViewport({ ratio: 0.99 });
+  await project.focus();
+  await page.keyboard.press('Enter');
   await expect(page.locator('#service-dialog')).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(page.locator('#service-dialog')).not.toBeVisible();
@@ -151,6 +166,9 @@ for (const [width, height] of [
 test('reduced motion exposes all stories and services in reading order', async ({
   page,
 }) => {
+  await page.route('**/api/public', (route) =>
+    route.fulfill({ json: serviceContent }),
+  );
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
   await expect(page.locator('.jm-preloader')).toHaveCount(0, {
@@ -169,11 +187,15 @@ test('reduced motion exposes all stories and services in reading order', async (
   await page.locator('#navigation a[href="#servicios"]').click();
   await expect(page.locator('.service-panel').first()).toBeInViewport();
   for (const panel of await page.locator('.service-panel').all()) {
-    const artwork = await panel.locator('.sample-button').boundingBox();
-    const list = await panel.locator('.service-list').boundingBox();
-    expect(list!.y).toBeGreaterThanOrEqual(artwork!.y + artwork!.height);
+    const heading = await panel.locator('header').boundingBox();
+    const folder = await panel.locator('app-service-folder').boundingBox();
+    expect(folder!.y).toBeGreaterThanOrEqual(heading!.y + heading!.height);
   }
-  expect(await page.locator('canvas').count()).toBe(0);
+  await expect(page.locator('canvas.lanyard-canvas')).toHaveCount(0);
+  await expect(page.locator('app-portfolio-tech-text')).not.toHaveClass(
+    /is-ready/,
+  );
+  await expect(page.locator('app-service-folder[data-live]')).toHaveCount(0);
   await page.screenshot({
     fullPage: true,
     path: 'output/playwright/reduced-motion.png',

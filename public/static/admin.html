@@ -3,18 +3,27 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="theme-color" content="#f4f7f5" />
+    <meta name="theme-color" content="#f6f5f0" />
     <title>Estudio — Panel Jerath Moreira</title>
-    <link rel="stylesheet" href="/static/admin.css?v=studio-metrics-2" />
-    <script defer src="/static/admin.js?v=studio-metrics-2"></script>
+    <link rel="stylesheet" href="/static/admin.css?v=studio-admin-3" />
+    <link rel="stylesheet" href="/static/admin-studio.css?v=1" />
+    <script defer src="/static/admin.js?v=studio-visual-1"></script>
   </head>
   <body>
     <a class="skip-link" href="#main">Saltar al contenido</a>
     <div id="loginScreen" class="login-screen" hidden>
       <div class="login-decoration">
         <div class="login-brand">
-          <img class="login-logo" src="/favicon-jm-original.png" alt="" width="64" height="64" />
-          <div><strong>Jerath Moreira</strong><span>Estudio creativo</span></div>
+          <img
+            class="login-logo"
+            src="/favicon-jm-original.png"
+            alt=""
+            width="64"
+            height="64"
+          />
+          <div>
+            <strong>Jerath Moreira</strong><span>Estudio creativo</span>
+          </div>
         </div>
         <h1>Tu espacio<br />para crear<span class="accent">.</span></h1>
         <p>
@@ -24,9 +33,10 @@
         <div class="login-decor-bottom">Tu trabajo. Tu espacio.</div>
       </div>
       <form id="loginForm" class="login-form">
-        <p class="eyebrow">Acceso privado</p>
         <h2>Bienvenido de nuevo.</h2>
-        <p class="login-intro">Entra a tu estudio y dale forma a tu portafolio.</p>
+        <p class="login-intro">
+          Entra a tu estudio y dale forma a tu portafolio.
+        </p>
         <label for="loginUser">Usuario</label
         ><input
           id="loginUser"
@@ -48,6 +58,7 @@
             id="togglePassword"
             type="button"
             aria-label="Mostrar contraseña"
+            aria-pressed="false"
           >
             ◉
           </button>
@@ -64,9 +75,15 @@
     <div id="dashboard" class="dashboard" hidden>
       <aside class="sidebar" id="sidebar">
         <div class="sidebar-brand">
-          <img class="brand-avatar" src="/favicon-jm-original.png" alt="" width="44" height="44" />
+          <img
+            class="brand-avatar"
+            src="/favicon-jm-original.png"
+            alt=""
+            width="44"
+            height="44"
+          />
           <div class="brand-text">
-            JERATH MOREIRA <small>Portafolio / Admin</small>
+            Jerath Moreira <small>Estudio / Portafolio</small>
           </div>
         </div>
         <div class="sidebar-label">Espacio de trabajo</div>
@@ -93,6 +110,14 @@
           <button id="logoutBtn" class="logout-item" type="button"></button>
         </div>
       </aside>
+      <button
+        type="button"
+        id="mobileBackdrop"
+        class="mobile-backdrop"
+        aria-label="Cerrar menú"
+        tabindex="-1"
+        hidden
+      ></button>
       <div class="workspace">
         <header class="topbar">
           <div class="topbar-left">
@@ -101,6 +126,8 @@
               id="mobileMenu"
               type="button"
               aria-label="Mostrar menú"
+              aria-controls="sidebar"
+              aria-expanded="false"
             >
               ☰</button
             ><span class="top-breadcrumb"
@@ -130,7 +157,7 @@
       >
         <div class="drawer-heading">
           <div>
-            <p class="eyebrow" id="editorEyebrow">EDITAR</p>
+            <p id="editorEyebrow" hidden>EDITAR</p>
             <h2 id="editorTitle">Editar</h2>
           </div>
           <button
@@ -146,7 +173,12 @@
         <div class="drawer-footer">
           <button type="button" class="btn secondary" id="cancelEditor">
             Cancelar</button
-          ><button type="button" class="btn primary" id="saveEditor">
+          ><button
+            type="submit"
+            form="contentForm"
+            class="btn primary"
+            id="saveEditor"
+          >
             Guardar cambios <span>↗</span>
           </button>
         </div>

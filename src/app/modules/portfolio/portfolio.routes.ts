@@ -13,6 +13,6 @@ export const PortfolioRoutes: Routes = [
         (m) => m.PortfolioHomePage,
       ),
     path: '',
-    title: 'Jerath Moreira — Diseño & Dirección Creativa',
+    title: 'Jerath Moreira — Diseñador gráfico',
   },
 ];

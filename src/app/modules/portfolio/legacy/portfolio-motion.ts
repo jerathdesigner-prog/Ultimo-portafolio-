@@ -23,7 +23,9 @@ export function startPortfolioMotion(portfolio: PublicPortfolio): void {
   let activePanel = 0, reduceMotion = false, ticking = false, lastVw=innerWidth;
   // A continuous reading layout avoids scroll choreography on short screens
   // and when the visitor requests reduced motion (including live changes).
+  const mobileMedia=matchMedia('(max-width: 650px)');
   const readingMedia=matchMedia('(prefers-reduced-motion: reduce), (max-height: 540px) and (min-aspect-ratio: 1/1)');
+  mobileMedia.addEventListener('change',requestRender);
   readingMedia.addEventListener('change',requestRender);
   function effectiveScroll(){return Math.max(0,scrollY)}
   function viewport(){return Math.max(document.documentElement.clientHeight,1)}
@@ -133,15 +135,17 @@ export function startPortfolioMotion(portfolio: PublicPortfolio): void {
     sceneFooter.style.pointerEvents=cueOpacity>.16?'auto':'none';
     const panelW=panels[0]?.getBoundingClientRect().width||innerWidth;
     activePanel=clamp(Math.round(px/panelW),0,panels.length-1);
-    // Offscreen projects must not capture Tab while another scene is visible.
+    // Visible folders are usable during the entrance; only fully offscreen
+    // panels stay inert so they cannot capture focus or pointer input.
     panels.forEach(panel=>{
       const bounds=panel.getBoundingClientRect();
-      panel.inert=t.slide<.998 || bounds.right<=0 || bounds.left>=innerWidth;
+      panel.inert=bounds.right<=0 || bounds.left>=innerWidth;
     });
   }
   function render(){
     ticking=false;
     const reading=readingMedia.matches;
+    document.body.classList.toggle('mobile-layout',mobileMedia.matches);
     document.body.classList.toggle('reading-layout',reading);
     hero.classList.toggle('reading-layout',reading);
     if(reading){
@@ -161,18 +165,18 @@ export function startPortfolioMotion(portfolio: PublicPortfolio): void {
     siteHeader.classList.toggle('works-active',t.local>viewport()*.39 && t.local<t.total-viewport()*.20);
     // Visible al principio; oculta durante el recorrido; visible otra vez al llegar al final.
     const contactRect=$('#contacto').getBoundingClientRect();
-    // En un panel sticky, su top es cero ANTES de entrar. Esperar también
-    // a que ambos bordes horizontales se alineen con el viewport.
+    // El panel ya está centrado bajo la máscara: el encabezado espera al zoom final.
     const contactAligned=contactRect.left<=Math.max(3,innerWidth*.004)
       && contactRect.right<=innerWidth+Math.max(3,innerWidth*.004);
-    const inFinalSection=contactRect.top<=viewport()*.12 && contactAligned;
+    const contactProgress=Number($('#contacto').style.getPropertyValue('--contact-progress')||0);
+    const inFinalSection=contactRect.top<=viewport()*.12 && contactAligned && contactProgress>=.98;
     const atBeginning=effectiveScroll()<40;
     const hidden=!atBeginning&&!inFinalSection;
     siteHeader.classList.toggle('is-scrolled-away',hidden);
     siteHeader.classList.toggle('contact-visible',inFinalSection);
     if(hidden){
       const navigation=$('#navigation'),toggle=$('#menu-toggle');
-      if(navigation&&!navigation.hidden){navigation.classList.remove('is-open');navigation.inert=true;navigation.hidden=true;toggle?.setAttribute('aria-expanded','false')}
+      if(navigation&&!navigation.hidden){navigation.classList.remove('is-open');navigation.inert=true;navigation.hidden=true;toggle?.setAttribute('aria-expanded','false');toggle?.setAttribute('aria-label','Abrir menú')}
     }
   }
   function requestRender(){if(!ticking){ticking=true;requestAnimationFrame(render)}}
@@ -207,17 +211,19 @@ export function startPortfolioMotion(portfolio: PublicPortfolio): void {
   function closeMenu(immediate=false){
     clearTimeout(menuCloseTimer);nav.classList.remove('is-open');nav.inert=true;
     menuBtn.setAttribute('aria-expanded','false');
+    menuBtn.setAttribute('aria-label','Abrir menú');
     if(immediate){nav.hidden=true;return;}
     menuCloseTimer=setTimeout(()=>{if(!nav.classList.contains('is-open'))nav.hidden=true},380);
   }
   function openMenu(){
     clearTimeout(menuCloseTimer);nav.hidden=false;nav.inert=false;
     menuBtn.setAttribute('aria-expanded','true');
-    requestAnimationFrame(()=>requestAnimationFrame(()=>nav.classList.add('is-open')));
+    menuBtn.setAttribute('aria-label','Cerrar menú');
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{if(menuBtn.getAttribute('aria-expanded')==='true')nav.classList.add('is-open')}));
   }
   nav.inert=true;
   menuBtn.addEventListener('click',()=>{if(menuBtn.getAttribute('aria-expanded')==='true')closeMenu();else openMenu()});
-  $$('a[href^="#"]',nav).forEach(a=>a.addEventListener('click',closeMenu));
+  $$('a[href^="#"]',nav).forEach(a=>a.addEventListener('click',()=>closeMenu()));
   $$('a[href="#sobre-mi"]').forEach(a=>a.addEventListener('click',e=>{
     if(!readingMedia.matches)return;
     e.preventDefault();stories[0]?.scrollIntoView({behavior:'instant'});
@@ -238,6 +244,7 @@ export function startPortfolioMotion(portfolio: PublicPortfolio): void {
   const projectById=new Map(portfolio.projects.map(p=>[p.id,p]));
   const mediaById=new Map(portfolio.media.map(m=>[m.id,m]));
   let projectClosingTimer=null;
+  let projectReturnFocus=null;
   function closeProjectDialog(){
     if(!serviceDialog.open||serviceDialog.classList.contains('is-closing'))return;
     const motionOff=reduceMotion||matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -266,8 +273,9 @@ export function startPortfolioMotion(portfolio: PublicPortfolio): void {
     }
     return wrap;
   }
-  function openDetail(key){
+  function openDetail(key,opener){
     const p=projectById.get(key);if(!p)return;
+    projectReturnFocus=opener?.closest('app-service-folder')?.querySelector('.folder-float__trigger')||opener;
     const service=portfolio.services.find(s=>s.id===p.serviceId);
     const banner=$('#detail-banner');banner.replaceChildren();banner.removeAttribute('role');
     const heroMedia=mediaById.get(p.coverMediaId)||mediaById.get(service?.coverMediaId);
@@ -299,23 +307,39 @@ export function startPortfolioMotion(portfolio: PublicPortfolio): void {
   }
   $$('.award-card').forEach(card=>card.addEventListener('click',()=>openAward(card)));
 
-  $$('[data-service]').forEach(btn=>btn.addEventListener('click',()=>openDetail(btn.dataset.service)));
+  track.addEventListener('click',event=>{
+    const button=event.target.closest('button[data-service]');
+    if(button&&track.contains(button))openDetail(button.dataset.service,button);
+  });
   $$('[data-brief]').forEach(btn=>btn.addEventListener('click',()=>showDialog(briefDialog)));
   $$('dialog .dialog-close').forEach(btn=>btn.addEventListener('click',()=>{const d=btn.closest('dialog');if(d===serviceDialog)closeProjectDialog();else d.close()}));
   [serviceDialog,briefDialog,awardDialog].filter(Boolean).forEach(d=>{
     d.addEventListener('close',()=>{
-      if(d===serviceDialog){clearTimeout(projectClosingTimer);d.classList.remove('is-closing');document.body.classList.remove('project-open')}
+      if(d===serviceDialog){clearTimeout(projectClosingTimer);d.classList.remove('is-closing');document.body.classList.remove('project-open');projectReturnFocus?.focus({preventScroll:true})}
       if(!dialogOpen())document.body.classList.remove('modal-open');
     });
     d.addEventListener('click',e=>{if(e.target===d){if(d===serviceDialog)closeProjectDialog();else d.close()}});
     if(d===serviceDialog)d.addEventListener('cancel',e=>{e.preventDefault();closeProjectDialog()});
   });
-  function briefText(){const form=$('#brief-form');const name=$('#client-name').value.trim();const desc=$('#client-idea').value.trim();if(!name||!desc){form.reportValidity();return null}
+  function briefText(){const form=$('#brief-form');const name=$('#client-name').value.trim();const desc=$('#client-idea').value.trim();if(!form.reportValidity())return null;
     const categories=$$('input[name=service]:checked',form).map(i=>i.value);const date=$('#client-date').value;
-    return `SOLICITUD DE PROYECTO — JERATH MOREIRA\n\nNombre o marca: ${name}\nServicios: ${categories.join(', ')||'Por definir'}\nFecha estimada: ${date||'Por definir'}\n\nIDEA DEL PROYECTO\n${desc}\n\n---\nCreado desde el portafolio de Jerath Moreira.`;
+    return `SOLICITUD DE PROYECTO — JERATH MOREIRA\n\nNombre o marca: ${name||'No indicado'}\nServicios: ${categories.join(', ')||'Por definir'}\nFecha estimada: ${date||'Por definir'}\n\nIDEA DEL PROYECTO\n${desc}\n\n---\nCreado desde el portafolio de Jerath Moreira.`;
   }
-  $('#brief-form').addEventListener('submit',async e=>{e.preventDefault();const t=briefText();if(!t)return;$('#brief-output').hidden=false;$('#brief-output').value=t;try{await navigator.clipboard.writeText(t);$('#brief-status').textContent='Solicitud copiada. Ya puedes compartirla.'}catch{const el=$('#brief-output');el.select();try{document.execCommand('copy');$('#brief-status').textContent='Solicitud copiada.'}catch{$('#brief-status').textContent='Selecciona y copia el texto preparado.'}}});
-  $('#download-brief').addEventListener('click',()=>{const t=briefText();if(!t)return;const blob=new Blob([t],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='solicitud-jerath-moreira.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),500);$('#brief-status').textContent='Archivo .txt descargado.'});
+  let briefBusy=false;
+  async function acceptedBrief(method){
+    const text=briefText();if(!text||briefBusy)return null;
+    briefBusy=true;
+    const buttons=$$('#brief-form .brief-buttons button');buttons.forEach(button=>button.disabled=true);
+    $('#brief-status').textContent='Guardando justificante…';
+    try{
+      if(typeof window.jmRecordBriefAcceptance!=='function')throw new Error('No se pudo cargar el registro de aceptación. Recarga la página.');
+      const receipt=await window.jmRecordBriefAcceptance(method);if(!receipt)return null;
+      return `${text}\nJustificante: ${receipt.receipt}\nFecha: ${receipt.occurredAt}\nVersión legal: ${receipt.version}\nAcción: ${method==='copy'?'Copiar':'Descargar'}\nTérminos aceptados y privacidad leída. No constituye un encargo contratado.`;
+    }catch(error){$('#brief-status').textContent=error.message||'No se pudo registrar la aceptación. Inténtalo de nuevo.';return null}
+    finally{briefBusy=false;buttons.forEach(button=>button.disabled=false)}
+  }
+  $('#brief-form').addEventListener('submit',async e=>{e.preventDefault();const t=await acceptedBrief('copy');if(!t)return;$('#brief-output').hidden=false;$('#brief-output').value=t;try{await navigator.clipboard.writeText(t);$('#brief-status').textContent='Solicitud copiada con su justificante. Ya puedes compartirla.'}catch{const el=$('#brief-output');el.select();try{document.execCommand('copy');$('#brief-status').textContent='Solicitud copiada con su justificante.'}catch{$('#brief-status').textContent='Selecciona y copia el texto preparado con su justificante.'}}});
+  $('#download-brief').addEventListener('click',async()=>{const t=await acceptedBrief('download');if(!t)return;const blob=new Blob([t],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='solicitud-jerath-moreira.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),500);$('#brief-status').textContent='Archivo .txt descargado con su justificante.'});
 
   // Entrada de Reconocimientos: una sola vez, con fallback visible si JS falla.
   // El título nunca queda bloqueado en opacity:0 al entrar mediante un ancla.
@@ -338,7 +362,7 @@ export function startPortfolioMotion(portfolio: PublicPortfolio): void {
   // Drag, keyboard and visible buttons share the same document positions.
   // Clic corto en una tarjeta: amplia el certificado. Arrastre: desplaza el carrusel.
   const awardsTrack=$('#awards-track');
-  if(awardsTrack){
+  if(awardsTrack && !awardsTrack.hasAttribute('appRecognitionSwap')){
     const cards=$$('.award-card',awardsTrack);
     let drag=null, suppressClick=false;
     cards.forEach(card=>card.querySelectorAll('img').forEach(img=>img.draggable=false));
@@ -406,24 +430,27 @@ export function startPortfolioMotion(portfolio: PublicPortfolio): void {
     });
   }
 
-  // Transición entre Reconocimientos y Tu proyecto: misma lógica de barrido
-  // horizontal que Servicios. El panel final se superpone sobre la última vista
-  // de Reconocimientos mientras ambas comparten el viewport.
+  // El favicon asciende, se centra y abre Contacto al acercarse con el scroll.
   const contactArea=$('#contacto');
   if(contactArea){
     const revealShell=document.createElement('div');
-    revealShell.className='contact-reveal-shell contact-ready';
+    revealShell.className='contact-reveal-shell contact-ready contact-portal';
     revealShell.setAttribute('aria-label','Transición a la sección Tu proyecto');
     contactArea.parentNode.insertBefore(revealShell,contactArea);
     revealShell.appendChild(contactArea);
-    // Mantener el último viewport de Reconocimientos visible detrás mientras
-    // entra el nuevo panel, igual que la transición horizontal a Servicios.
-    // La copia es meramente decorativa: no duplica controles interactivos.
-    // El documento original de Reconocimientos permanece fijo detrás del
-    // barrido; no creamos ninguna copia adicional ni una segunda fila.
+    const portalInk=document.createElement('div');
+    portalInk.className='contact-portal-ink';
+    portalInk.setAttribute('aria-hidden','true');
+    portalInk.innerHTML='<img src="/static/media/contact-transition-favicon.svg" alt="" width="512" height="512"/>';
+    revealShell.insertBefore(portalInk,contactArea);
+    const setPortal=(name,value)=>{
+      revealShell.style.setProperty(name,value);
+      contactArea.style.setProperty(name,value);
+    };
+    // Reconocimientos permanece fijo detrás de la máscara, sin duplicar sus tarjetas.
     const awardsForPin=$('#reconocimientos');
     const measureAwards=()=>{
-      if(awardsForPin)awardsForPin.style.setProperty('--awards-rendered-height', awardsForPin.offsetHeight+'px');
+      if(awardsForPin)awardsForPin.style.setProperty('--awards-rendered-height', awardsForPin.getBoundingClientRect().height+'px');
     };
     measureAwards();
     addEventListener('resize',measureAwards,{passive:true});
@@ -438,33 +465,53 @@ export function startPortfolioMotion(portfolio: PublicPortfolio): void {
       scheduled=false;
       if(readingMedia.matches){
         contactArea.style.setProperty('--reveal-x','0%');
+        contactArea.style.setProperty('--contact-progress','1');
+        setPortal('--portal-opacity','1');
+        setPortal('--portal-ink','0');
+        contactArea.style.setProperty('--portal-page-opacity','1');
+        contactArea.style.maskImage='none';
+        contactArea.style.webkitMaskImage='none';
+        revealShell.style.removeProperty('height');
+        revealShell.dataset.revealDistance='0';
+        contactArea.inert=false;
         contactArea.style.pointerEvents='auto';
         return;
       }
       const vh=window.innerHeight||1;
-      const mobile=matchMedia('(max-width: 650px)').matches;
       const top=revealShell.getBoundingClientRect().top;
-      // Escritorio: el sticky retiene Reconocimientos detrás mientras entra Contacto.
-      // Móvil: respeta la altura natural de la ilustración y del pie de página.
-      // Barrido breve en escritorio: 30% del viewport (unos 3 pasos de rueda),
-      // igual al recorrido extra del contenedor (130svh - 100svh) en el CSS.
-      // El último fotograma queda totalmente alineado antes de salir el sticky.
-      const distance=mobile?vh*.55:vh*.30;
-      const progress=mobile?clamp01((vh*.55-top)/distance):clamp01((-top)/distance);
-      const t=ease(progress);
-      contactArea.style.setProperty('--reveal-x',((1-t)*100).toFixed(3)+'%');
-      contactArea.style.pointerEvents=progress>.90?'auto':'none';
+      const distance=vh*1.5;
+      const progress=clamp01(-top/distance);
+      const rise=ease(clamp01(progress/.28));
+      const zoom=ease(clamp01((progress-.38)/.60));
+      const baseSize=Math.min(210,innerWidth*.38);
+      const fullSize=Math.max(innerWidth,vh)*2.3;
+      const size=baseSize*Math.pow(fullSize/baseSize,zoom);
+      revealShell.style.setProperty('height',(contactArea.offsetHeight+distance)+'px','important');
+      revealShell.dataset.revealDistance=String(distance);
+      contactArea.style.setProperty('--contact-progress',progress.toFixed(4));
+      setPortal('--portal-size',size.toFixed(2)+'px');
+      setPortal('--portal-y',((1-rise)*vh*.75).toFixed(2)+'px');
+      setPortal('--portal-opacity',String(ease(clamp01(progress/.08))));
+      setPortal('--portal-ink',String(1-ease(clamp01((progress-.4)/.22))));
+      contactArea.style.setProperty('--portal-page-opacity',String(ease(clamp01((progress-.38)/.22))));
+      const mask=progress>=.98?'none':'url("/static/media/contact-transition-favicon.svg")';
+      contactArea.style.maskImage=mask;
+      contactArea.style.webkitMaskImage=mask;
+      contactArea.inert=progress<.98;
+      contactArea.style.pointerEvents=progress>=.98?'auto':'none';
+      requestRender();
     };
     const queue=()=>{if(!scheduled){scheduled=true;requestAnimationFrame(updateContactReveal)}};
     addEventListener('scroll',queue,{passive:true});
     addEventListener('resize',queue,{passive:true});
     reducedMedia.addEventListener?.('change',queue);
+    readingMedia.addEventListener('change',queue);
+    new ResizeObserver(queue).observe(contactArea);
     // Permite acceder directamente a #contacto con enlace de menú.
     document.querySelectorAll('a[href="#contacto"]').forEach(a=>a.addEventListener('click',e=>{
       e.preventDefault();
-      const mobile=matchMedia('(max-width: 650px)').matches;
       const target=revealShell.getBoundingClientRect().top+scrollY+
-        (readingMedia.matches?0:(mobile?innerHeight*.015:innerHeight*.31));
+        (readingMedia.matches?0:innerHeight*1.5);
       scrollTo({top:target,behavior:readingMedia.matches?'instant':'smooth'});
     }));
     requestAnimationFrame(updateContactReveal);

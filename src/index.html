@@ -5,6 +5,20 @@
       document.documentElement.classList.add('jm-preloading');
     </script>
     <base href="/" />
+    <link
+      rel="preload"
+      href="/static/fonts/Poppins-Regular.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/static/fonts/Poppins-SemiBold.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin
+    />
     <meta charset="utf-8" />
     <meta
       content="width=device-width, initial-scale=1, viewport-fit=cover"
@@ -117,7 +131,7 @@
         background: var(--scarab, #23312d);
         color: var(--sylvan, #e7eacb);
         isolation: isolate;
-        font-family: var(--cool, 'Coolvetica', Arial, sans-serif);
+        font-family: var(--cool, 'Poppins', Arial, sans-serif);
       }
 
       .jm-preloader__center {

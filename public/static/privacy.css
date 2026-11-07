@@ -1,12 +1,16 @@
+@font-face{font-family:'Poppins';font-style:normal;font-weight:400;font-display:swap;src:url('/static/fonts/Poppins-Regular.ttf') format('truetype')}
+@font-face{font-family:'Poppins';font-style:normal;font-weight:500;font-display:swap;src:url('/static/fonts/Poppins-Medium.ttf') format('truetype')}
+@font-face{font-family:'Poppins';font-style:normal;font-weight:600;font-display:swap;src:url('/static/fonts/Poppins-SemiBold.ttf') format('truetype')}
+@font-face{font-family:'Poppins';font-style:normal;font-weight:700;font-display:swap;src:url('/static/fonts/Poppins-Bold.ttf') format('truetype')}
 .jm-privacy-banner[hidden] { display: none; }
 .jm-privacy-banner {
   background: #e7eacb; border: 1px solid #23312d40; border-radius: 12px;
   bottom: max(12px, env(safe-area-inset-bottom)); box-shadow: 0 8px 28px #14271d24;
-  box-sizing: border-box; color: #23312d; font: 13px/1.45 Arial, sans-serif;
+  box-sizing: border-box; color: #23312d; font: 13px/1.45 'Poppins', Arial, sans-serif;
   left: 12px; max-height: calc(100svh - 24px); overflow-y: auto;
   padding: 16px; position: fixed; width: min(340px, calc(100% - 24px)); z-index: 49000;
 }
-.jm-privacy-banner h2 { font: 700 17px/1.25 Arial, sans-serif; letter-spacing: -.02em; margin: 0 28px 8px 0; }
+.jm-privacy-banner h2 { font: 700 17px/1.25 'Poppins', Arial, sans-serif; letter-spacing: -.02em; margin: 0 28px 8px 0; }
 .jm-privacy-banner p { margin: 8px 0; }
 .jm-privacy-banner a, .jm-legal-page a { color: inherit; text-underline-offset: 4px; }
 .jm-privacy-actions { display: grid; gap: 8px; grid-template-columns: 1fr 1fr; }
@@ -22,19 +26,19 @@
 .jm-privacy-banner :focus-visible, .jm-legal-page :focus-visible { outline: 3px solid #526047; outline-offset: 3px; }
 .jm-legal-footer { background: #e7eacb; border-top: 1px solid #23312d26; color: #23312d; position: relative; z-index: 21; }
 .jm-legal-links { align-items: center; display: flex; flex-wrap: wrap; gap: 0 24px; justify-content: center; margin: 0 auto; max-width: 1100px; padding: 8px 24px; width: 100%; }
-.jm-legal-links a, .jm-legal-links button { align-items: center; background: transparent; border: 0; color: inherit; cursor: pointer; display: inline-flex; font: 13px/1.5 Arial, sans-serif; min-height: 44px; padding: 0; text-decoration: underline; text-underline-offset: 4px; }
-#brief-form > label, #brief-form legend, #brief-form .brief-options label { font: 14px/1.5 Arial, sans-serif; }
+.jm-legal-links a, .jm-legal-links button { align-items: center; background: transparent; border: 0; color: inherit; cursor: pointer; display: inline-flex; font: 13px/1.5 'Poppins', Arial, sans-serif; min-height: 44px; padding: 0; text-decoration: underline; text-underline-offset: 4px; }
+#brief-form > label, #brief-form legend, #brief-form .brief-options label { font: 14px/1.5 'Poppins', Arial, sans-serif; }
 #brief-form .brief-options label { min-height: 44px; }
-#brief-form input:not([type=checkbox]), #brief-form textarea { font: 16px/1.5 Arial, sans-serif; }
+#brief-form input:not([type=checkbox]), #brief-form textarea { font: 16px/1.5 'Poppins', Arial, sans-serif; }
 #brief-form textarea::placeholder, #brief-form input::placeholder { color: #d0d5bb; opacity: 1; }
-#brief-form .brief-buttons button { font: 14px/1.5 Arial, sans-serif; min-height: 48px; }
-#brief-form .brief-notice, #brief-form .brief-status { color: #e7eacb; font: 13px/1.6 Arial, sans-serif; }
+#brief-form .brief-buttons button { font: 14px/1.5 'Poppins', Arial, sans-serif; min-height: 48px; }
+#brief-form .brief-notice, #brief-form .brief-status { color: #e7eacb; font: 13px/1.6 'Poppins', Arial, sans-serif; }
 #brief-form .brief-buttons button:disabled { cursor: wait; opacity: .55; }
-#brief-form .jm-legal-check { align-items: flex-start; display: flex; font: 14px/1.5 Arial, sans-serif; gap: 12px; margin: 12px 0; min-height: 44px; }
+#brief-form .jm-legal-check { align-items: flex-start; display: flex; font: 14px/1.5 'Poppins', Arial, sans-serif; gap: 12px; margin: 12px 0; min-height: 44px; }
 #brief-form .jm-legal-check input { accent-color: #b0b454; flex: 0 0 20px; height: 20px; margin: 2px 0 0; min-height: 20px; width: 20px; }
 #brief-form .jm-legal-check span { color: inherit; }
 #brief-form .jm-legal-check a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
-.jm-legal-page { background: #e7eacb; color: #23312d; font: 16px/1.65 Arial, sans-serif; margin: 0; }
+.jm-legal-page { background: #e7eacb; color: #23312d; font: 16px/1.65 'Poppins', Arial, sans-serif; margin: 0; }
 .jm-legal-page header, .jm-legal-page main, .jm-legal-page footer { margin: auto; max-width: 76ch; padding: 24px; }
 .jm-legal-page nav { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-top: 24px; }
 .jm-legal-page nav a { min-height: 44px; }

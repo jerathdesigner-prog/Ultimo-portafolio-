@@ -1,6 +1,11 @@
 /* Portfolio design system, migrated verbatim from the legacy plantilla.html. */
-/* Webfont disabled pending an independent web license or Adobe web project. */
-:root{--scarab:#23312D;--oasis:#B0B454;--sylvan:#E7EACB;--sage:#E7EACB;--paper:#f2f1e2;--dark:#23312D;--ink:#f4f3e7;--muted:rgba(244,243,231,.68);--script:'Caveat','Segoe Print','Comic Sans MS',cursive;--sans:'Coolvetica','DM Sans',Arial,sans-serif;--cool:'Coolvetica','DM Sans',Arial,sans-serif;font-synthesis:none;color-scheme:light}
+/* Poppins is self-hosted under the SIL Open Font License in /static/fonts/OFL.txt. */
+@font-face{font-family:'Poppins';font-style:normal;font-weight:400;font-display:swap;src:url('/static/fonts/Poppins-Regular.ttf') format('truetype')}
+@font-face{font-family:'Poppins';font-style:normal;font-weight:500;font-display:swap;src:url('/static/fonts/Poppins-Medium.ttf') format('truetype')}
+@font-face{font-family:'Poppins';font-style:normal;font-weight:600;font-display:swap;src:url('/static/fonts/Poppins-SemiBold.ttf') format('truetype')}
+@font-face{font-family:'Poppins';font-style:normal;font-weight:700;font-display:swap;src:url('/static/fonts/Poppins-Bold.ttf') format('truetype')}
+
+:root{--scarab:#23312D;--oasis:#B0B454;--sylvan:#E7EACB;--sage:#E7EACB;--paper:#f2f1e2;--dark:#23312D;--ink:#f4f3e7;--muted:rgba(244,243,231,.68);--script:'Caveat','Segoe Print','Comic Sans MS',cursive;--sans:'Poppins','DM Sans',Arial,sans-serif;--cool:'Poppins','DM Sans',Arial,sans-serif;font-synthesis:none;color-scheme:light}
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:5rem}
 body{margin:0;background:var(--sage);color:var(--ink);font-family:var(--sans);overflow-x:hidden;-webkit-font-smoothing:antialiased}
@@ -103,8 +108,8 @@ body.reduce-motion *,body.reduce-motion *::before,body.reduce-motion *::after{an
 @media(max-width:650px){.footer-socials{gap:8px 16px}}
 
 /* November 2026: typography + social icon update */
-:root{--script:"Coolvetica",Arial,sans-serif;--sans:"Coolvetica",Arial,sans-serif;--cool:"Coolvetica",Arial,sans-serif}
-html,body,button,input,textarea,select,option{font-family:"Coolvetica",Arial,sans-serif}
+:root{--script:"Poppins",Arial,sans-serif;--sans:"Poppins",Arial,sans-serif;--cool:"Poppins",Arial,sans-serif}
+html,body,button,input,textarea,select,option{font-family:"Poppins",Arial,sans-serif}
 .footer-socials{gap:clamp(10px,1.35vw,18px)}
 .footer-socials a.social-icon{display:inline-flex;justify-content:center;align-items:center;width:42px;height:42px;box-sizing:border-box;padding:9px;flex:none;border:1px solid rgba(35,49,45,.3);border-radius:50%;color:var(--scarab);background:transparent;transition:transform .22s,background .22s,color .22s,border-color .22s}
 .footer-socials a.social-icon svg{width:22px;height:22px;display:block;flex:none}
@@ -209,7 +214,7 @@ html,body,button,input,textarea,select,option{font-family:"Coolvetica",Arial,san
 .works-track{will-change:transform}
 .service-panel{width:62vw;flex-basis:62vw;background:var(--scarab)}
 .works-launch-copy{position:absolute;z-index:3;left:5.5%;top:43%;transform:translateY(-50%);opacity:0;will-change:opacity,transform;pointer-events:none}
-.works-launch-copy h2{margin:0;color:#f5f5e7;font-family:'Coolvetica',Arial,sans-serif;font-size:clamp(72px,10vw,165px);line-height:.95;letter-spacing:-.04em;font-weight:400;text-shadow:0 3px 28px rgba(35,49,45,.18)}
+.works-launch-copy h2{margin:0;color:#f5f5e7;font-family:'Poppins',Arial,sans-serif;font-size:clamp(72px,10vw,165px);line-height:.95;letter-spacing:-.04em;font-weight:400;text-shadow:0 3px 28px rgba(35,49,45,.18)}
 .works-launch-copy h2::after{content:'.';color:var(--oasis)}
 .scene-footer{z-index:12}
 @media(min-width:951px){.service-panel{width:62vw;flex-basis:62vw}}
@@ -236,7 +241,7 @@ html,body,button,input,textarea,select,option{font-family:"Coolvetica",Arial,san
   will-change:opacity,transform;
 }
 .works-launch-copy h2{
-  font-family:'Coolvetica',Arial,sans-serif!important;
+  font-family:'Poppins',Arial,sans-serif!important;
   font-size:clamp(32px,3.3vw,53px)!important;
   line-height:1!important;
   font-weight:400;
@@ -460,10 +465,10 @@ html,body,button,input,textarea,select,option{font-family:"Coolvetica",Arial,san
 .service-dialog .detail-banner>.portfolio-media-item{width:100%;height:auto;display:block}
 .service-dialog .detail-banner .portfolio-media-item>img{width:100%;max-height:80svh;height:auto;object-fit:contain;background:#a3b19a;display:block}
 .service-dialog .detail-content{padding:clamp(34px,6vw,100px)!important;margin:0!important;max-width:1200px!important}
-.service-dialog #detail-title{font:600 clamp(49px,7vw,112px)/.95 'Coolvetica',Arial,sans-serif!important;letter-spacing:-.035em!important;margin:0 0 38px!important}
+.service-dialog #detail-title{font:600 clamp(49px,7vw,112px)/.95 'Poppins',Arial,sans-serif!important;letter-spacing:-.035em!important;margin:0 0 38px!important}
 .service-dialog .project-description{border-top:1px solid #ffffff35!important;padding-top:27px!important}
-.service-dialog .project-description h3{font:600 clamp(21px,2vw,32px) 'Coolvetica',Arial,sans-serif!important;margin:0 0 17px!important}
-.service-dialog .project-description p{font:400 clamp(15px,1.15vw,20px)/1.6 'Coolvetica',Arial,sans-serif!important;color:#eeeeda!important;white-space:pre-line}
+.service-dialog .project-description h3{font:600 clamp(21px,2vw,32px) 'Poppins',Arial,sans-serif!important;margin:0 0 17px!important}
+.service-dialog .project-description p{font:400 clamp(15px,1.15vw,20px)/1.6 'Poppins',Arial,sans-serif!important;color:#eeeeda!important;white-space:pre-line}
 .service-dialog .dialog-close{position:sticky!important;top:18px!important;left:auto!important;margin:18px 18px -62px auto!important;width:46px!important;height:46px!important;z-index:100!important;background:#23312dee!important}
 .portfolio-project-gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;width:100%;margin:0;padding:0}
 .portfolio-project-gallery[hidden]{display:none}
@@ -476,7 +481,7 @@ html,body,button,input,textarea,select,option{font-family:"Coolvetica",Arial,san
 .portfolio-media-item.is-audio{grid-column:1/-1;display:grid;grid-template-columns:50px 1fr;gap:8px 12px;align-items:center;padding:clamp(20px,4vw,55px);background:#304138;color:#e7eacb}
 .portfolio-media-item.is-audio .audio-icon{font-size:30px}
 .portfolio-media-item.is-audio audio{grid-column:1/-1;width:100%}
-.portfolio-hero-placeholder{min-height:350px;display:grid;place-items:center;color:#e7eacb;background:linear-gradient(145deg,#334b3e,#8a9a7a);font:700 clamp(42px,5vw,84px) 'Coolvetica',sans-serif}
+.portfolio-hero-placeholder{min-height:350px;display:grid;place-items:center;color:#e7eacb;background:linear-gradient(145deg,#334b3e,#8a9a7a);font:700 clamp(42px,5vw,84px) 'Poppins',sans-serif}
 @media(max-width:650px){.narrative{height:var(--hero-height-mobile,790svh)!important}.service-panel .service-list{max-height:32svh!important;bottom:13svh!important}.service-dialog{width:100vw!important;max-height:96svh!important;border-radius:12px!important}.service-dialog .detail-content{padding:42px 24px 52px!important}.service-dialog #detail-title{font-size:clamp(48px,11vw,76px)!important}.service-dialog .detail-banner>.artwork{height:260px!important}.portfolio-media-item.is-audio{padding:22px}}
 
 .service-dialog>.portfolio-project-gallery{width:100%!important;max-width:none!important;margin:0!important;padding:0!important}
@@ -951,7 +956,7 @@ main{max-width:100%}
 .contact-copy{ text-align:left!important; }
 .contact-copy h2{
   color:#23312D!important;
-  font-family:"Coolvetica",sans-serif!important;
+  font-family:"Poppins",sans-serif!important;
   font-weight:600!important;
   font-style:normal!important;
   font-size:clamp(42px,4.5vw,78px)!important;
@@ -983,7 +988,7 @@ main{max-width:100%}
   border-radius:16px!important;
   background:#23312D!important;
   color:#E7EACB!important;
-  font-family:"Coolvetica",sans-serif!important;
+  font-family:"Poppins",sans-serif!important;
   font-size:clamp(15px,1.18vw,18px)!important;
   font-weight:500!important;
   line-height:1.15!important;
@@ -1096,7 +1101,7 @@ main{max-width:100%}
 .awards-progress{width:clamp(96px,13vw,250px);height:2px;background:#23312d26;position:relative;overflow:hidden;margin-left:12px}
 .awards-progress span{position:absolute;top:0;left:0;width:8%;height:100%;background:#23312d;transition:width .2s ease}
 .awards-controls{display:flex;gap:12px}
-.award-circle{display:grid;place-items:center;border:1px solid #23312d55!important;color:#23312d!important;background:transparent!important;width:51px;height:51px;border-radius:50%;font:22px Coolvetica,Arial,sans-serif;transition:background .25s ease,color .25s ease,transform .25s ease}
+.award-circle{display:grid;place-items:center;border:1px solid #23312d55!important;color:#23312d!important;background:transparent!important;width:51px;height:51px;border-radius:50%;font:22px Poppins,Arial,sans-serif;transition:background .25s ease,color .25s ease,transform .25s ease}
 .award-circle:hover:not(:disabled){background:#23312d!important;color:#f4f5e6!important;transform:translateY(-3px)}
 .award-circle:disabled{opacity:.28;cursor:default}
 .award-dialog{max-height:calc(100svh - 36px);overflow-y:auto;scrollbar-width:none}

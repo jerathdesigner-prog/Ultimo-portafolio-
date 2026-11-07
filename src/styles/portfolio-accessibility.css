@@ -1,6 +1,6 @@
 /* Preserve Jerath's palette and character; strengthen the reading layer. */
 :root {
-  --reading-font: 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
+  --reading-font: 'Poppins', Arial, sans-serif;
   --reading-ink: #23312d;
   --reading-muted: #415449;
   --reading-paper: #e7eacb;
